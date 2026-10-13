@@ -1,12 +1,12 @@
 "use strict";
 const pages={
-dashboard:["Dashboard","A+ operational overview",["Inventory","Trading","Blockchain"]],
-inventory:["Inventory","Inventory and reservations",["Inventory records","Reservations","Reconciliation"]],
-trading:["Trading","Order lifecycle and matching",["Orders","Product matching","Trade authorization"]],
-checkout:["Checkout","Transaction integrity and checkout",["Checkout","Idempotency","Receipts"]],
-fulfillment:["Fulfillment","Shipping, receiving, and verified delivery",["Coordination","Shipping","Delivery"]],
-analytics:["Analytics","Operational metrics and reporting",["Trade metrics","Reporting","Exports"]],
-blockchain:["Blockchain","Energy Coin Sepolia testnet development",["Energy Coin","Wallet","Transactions"]]
+dashboard:["Exchange Overview","Verified asset exchange workspace",["Asset Markets","Tokenization Center","Trading Terminal","Settlement & Fulfillment","Network Analytics"]],
+inventory:["Asset Markets & Inventory","Verified assets, listings and reservations",["Browse asset classes","Verified asset registry","Inventory reservations"]],
+trading:["Trading Terminal","Seller-to-buyer orders and authorization",["Seller listings","Buyer offers","Trade authorization"]],
+checkout:["Settlement","Controlled checkout and transaction integrity",["Authorized checkout","Settlement controls","Receipts & reconciliation"]],
+fulfillment:["Fulfillment","Asset handoff, shipping and verified delivery",["Asset release","Shipping & receiving","Verified delivery"]],
+analytics:["Exchange Analytics","Evidence-based operational reporting",["Asset metrics","Trading metrics","Reconciliation exports"]],
+blockchain:["Tokenization & Blockchain","Verified asset rights and transaction evidence",["Asset verification","Tokenization readiness","Blockchain evidence"]]
 };
 function render(){
 let key="";
@@ -26,7 +26,7 @@ for(const name of items){
 const card=document.createElement("article");card.className="card";
 const tag=document.createElement("span");tag.className="tag";tag.textContent="DEVELOPMENT PREVIEW";
 const heading=document.createElement("h2");heading.textContent=name;
-const detail=document.createElement("p");detail.textContent="Preview only. No authenticated API or blockchain transaction connection.";
+const detail=document.createElement("p");detail.textContent="Integration pending. No live listings, balances, token issuance, orders, or settlement are available.";
 card.append(tag,heading,detail);area.append(card);
 }
 for(const link of document.querySelectorAll("[data-view]")){
