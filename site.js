@@ -14,3 +14,22 @@ if(toggle&&nav){
     nav.classList.remove("open");
   }));
 }
+
+const sections=[...document.querySelectorAll("main section[id]")];
+const sectionLinks=[...document.querySelectorAll('#site-nav a[href^="#"]')];
+function syncActiveNavigation(){
+  const hash=window.location.hash;
+  for(const link of sectionLinks){
+    if(hash && link.getAttribute("href")===hash)link.setAttribute("aria-current","location");
+    else link.removeAttribute("aria-current");
+  }
+}
+window.addEventListener("hashchange",syncActiveNavigation);
+syncActiveNavigation();
+document.addEventListener("keydown",event=>{
+  if(event.key==="Escape"&&toggle&&nav&&nav.classList.contains("open")){
+    nav.classList.remove("open");
+    toggle.setAttribute("aria-expanded","false");
+    toggle.focus();
+  }
+});
