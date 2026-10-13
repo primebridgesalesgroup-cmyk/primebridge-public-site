@@ -109,6 +109,19 @@ jobs:
                 catch(e){return e.message==='Invalid scoped metadata response'}
               });
               if(!malformed)throw Error('Malformed backend response was accepted');
+              const transport=await page.evaluate(async()=>{
+                const thrown=async()=>{throw new Error('sensitive transport detail')};
+                const invalidJson=async()=>({ok:true,json:async()=>{throw new SyntaxError('raw response detail')}});
+                const errors=[];
+                for(const mock of [thrown,invalidJson]){
+                  try{await readScopedMetadata('inventory_batch','example-1','test-token',mock)}
+                  catch(e){errors.push(e.message)}
+                }
+                return errors;
+              });
+              if(transport.length!==2 || transport.some(message=>message!=='Metadata unavailable'))throw Error('Transport failure leaked internal details');
+              if(!opts.signal || typeof opts.signal.aborted!=='boolean' || opts.signal.aborted)throw Error('Metadata timeout signal missing');
+
               if(apiRequests.length)throw Error('Metadata mock leaked a real API request');
 
               await page.goto('http://127.0.0.1:8765/preview/index.html#invalid');
