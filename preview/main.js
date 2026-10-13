@@ -278,5 +278,18 @@ async function readScopedMetadata(kind, resourceId, token, fetchImpl = fetch) {
   if (!response.ok) {
     throw new Error("Metadata unavailable");
   }
-  return response.json();
+  const data = await response.json();
+  if (!data || typeof data !== "object" || Array.isArray(data) ||
+      data.kind !== kind || data.resource_id !== resourceId ||
+      data.read_only !== true ||
+      typeof data.organization_id !== "string" ||
+      !/^[A-Za-z0-9][A-Za-z0-9_.-]{0,127}$/.test(data.organization_id)) {
+    throw new Error("Invalid scoped metadata response");
+  }
+  return {
+    kind: data.kind,
+    resource_id: data.resource_id,
+    organization_id: data.organization_id,
+    read_only: true
+  };
 }
