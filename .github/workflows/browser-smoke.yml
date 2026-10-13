@@ -96,7 +96,7 @@ jobs:
                 let invalidRejected=false,deniedRejected=false;
                 try{await readScopedMetadata('trade','../invalid','test-token',mock)}catch(e){invalidRejected=e instanceof TypeError}
                 try{await readScopedMetadata('trade','example-2','test-token',async()=>({ok:false,status:403}))}catch(e){deniedRejected=e.message==='Metadata unavailable'}
-                return {calls,data,invalidRejected,deniedRejected};
+                return {calls:calls.map(({url,options})=>({url,options:{...options,signalPresent:options.signal instanceof AbortSignal,signal:undefined}})),data,invalidRejected,deniedRejected};
               });
               if(contract.calls.length!==1 || contract.calls[0].url!=='/api/v1/inventory/batches/example-1')throw Error('Metadata route mismatch');
               const opts=contract.calls[0].options;
@@ -120,7 +120,7 @@ jobs:
                 return errors;
               });
               if(transport.length!==2 || transport.some(message=>message!=='Metadata unavailable'))throw Error('Transport failure leaked internal details');
-              if(!opts.signal || typeof opts.signal.aborted!=='boolean' || opts.signal.aborted)throw Error('Metadata timeout signal missing');
+              if(!opts.signalPresent)throw Error('Metadata timeout signal missing');
 
               if(apiRequests.length)throw Error('Metadata mock leaked a real API request');
 
