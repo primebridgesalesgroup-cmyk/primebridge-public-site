@@ -14,6 +14,7 @@ permissions:
 jobs:
   browser:
     runs-on: ubuntu-latest
+    timeout-minutes: 12
     steps:
       - uses: actions/checkout@v4
       - name: Install Playwright Chromium
@@ -46,15 +47,15 @@ jobs:
               page.on('pageerror',e=>errors.push(e.message));
               await page.goto('http://127.0.0.1:8765/',{waitUntil:'networkidle'});
               if(viewport.width<500)await page.locator('.menu-toggle').click();
-              for(const anchor of ['network','workflow','blockchain','status']){
+              for(const anchor of ['platform','solutions','partners','mission']){
                 await page.locator('#site-nav a[href="#'+anchor+'"]').click();
                 if(!await page.locator('#'+anchor).count())throw Error('Missing section '+anchor);
-                if(viewport.width<500 && anchor!=='status')await page.locator('.menu-toggle').click();
+                if(viewport.width<500 && anchor!=='mission')await page.locator('.menu-toggle').click();
               }
               await page.goto('http://127.0.0.1:8765/blockchain.html');
               if(viewport.width<500)await page.locator('.menu-toggle').click();
               await page.getByRole('link',{name:'Ecosystem'}).click();
-              if(!page.url().includes('#network'))throw Error('Blockchain return link broken');
+              if(!page.url().includes('#platform'))throw Error('Blockchain return link broken');
               await page.goto('http://127.0.0.1:8765/preview/index.html');
               for(const route of ['dashboard','inventory','trading','checkout','fulfillment','analytics','blockchain']){
                 await page.locator('[data-view="'+route+'"]').click();
