@@ -1,0 +1,59 @@
+name: Check public navigation
+on:
+  push:
+    branches: [main]
+    paths:
+      - '*.html'
+      - 'site.js'
+      - 'preview/**'
+      - '.github/workflows/check-navigation.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  navigation:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate page links, anchors, and preview tabs
+        run: |
+          python3 - <<'PY'
+          from html.parser import HTMLParser
+          from pathlib import Path
+          from urllib.parse import urlsplit, unquote
+          class Page(HTMLParser):
+              def __init__(self):
+                  super().__init__()
+                  self.ids=set()
+                  self.links=[]
+              def handle_starttag(self, tag, attrs):
+                  a=dict(attrs)
+                  if 'id' in a: self.ids.add(a['id'])
+                  if tag=='a' and 'href' in a: self.links.append(a['href'])
+          root=Path('.')
+          pages={}
+          for file in root.rglob('*.html'):
+              if '.git' in file.parts: continue
+              page=Page();page.feed(file.read_text(encoding='utf-8'))
+              pages[file.resolve()]=page
+          errors=[]
+          for file,page in pages.items():
+              for href in page.links:
+                  url=urlsplit(href)
+                  if url.scheme or url.netloc or href.startswith('//') or href.startswith('mailto:'):continue
+                  target=(file.parent/unquote(url.path)).resolve() if url.path else file
+                  if target.is_dir():target=target/'index.html'
+                  if not target.is_file():
+                      errors.append(f'{file}: missing target {href}')
+                      continue
+                  if url.fragment and target in pages and url.fragment not in pages[target].ids:
+                      if target.name=='index.html' and target.parent.name=='preview':
+                          js=(target.parent/'main.js').read_text()
+                          if f'{url.fragment}:[' in js:continue
+                      errors.append(f'{file}: missing anchor {href}')
+          assert not errors, '\\n'.join(errors)
+          preview=(root/'preview/main.js').read_text()
+          for route in ('dashboard','inventory','trading','checkout','fulfillment','analytics','blockchain'):
+              assert f'{route}:[' in preview, f'Missing preview route: {route}'
+          print(f'Navigation checks passed across {len(pages)} HTML pages')
+          PY
