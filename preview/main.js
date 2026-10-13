@@ -9,8 +9,10 @@ analytics:["Analytics","Operational metrics and reporting",["Trade metrics","Rep
 blockchain:["Blockchain","Energy Coin Sepolia testnet development",["Energy Coin","Wallet","Transactions"]]
 };
 function render(){
-const key=location.hash.slice(1);
+let key="";
+try{key=decodeURIComponent(location.hash.slice(1));}catch{key="dashboard";}
 const page=Object.prototype.hasOwnProperty.call(pages,key)?key:"dashboard";
+if(key && key!==page){history.replaceState(null,"",location.pathname+location.search+"#dashboard");}
 const [title,description,items]=pages[page];
 document.title=title+" | A+ Ecosystem";
 const hero=document.getElementById("home-hero");if(hero)hero.hidden=page!=="dashboard";
@@ -32,4 +34,6 @@ if(link.dataset.view===page)link.setAttribute("aria-current","page");
 else link.removeAttribute("aria-current");
 }
 }
-window.addEventListener("hashchange",render);render();
+window.addEventListener("hashchange",render);
+window.addEventListener("pageshow",render);
+render();
