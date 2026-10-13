@@ -57,7 +57,7 @@ jobs:
               }
               await page.goto('http://127.0.0.1:8765/blockchain.html');
               if(viewport.width<500)await page.locator('.menu-toggle').click();
-              await page.getByRole('link',{name:'Ecosystem'}).click();
+              await page.locator('#site-nav a[href="./#platform"]').click();
               if(!page.url().includes('#platform'))throw Error('Blockchain return link broken');
               await page.goto('http://127.0.0.1:8765/preview/index.html');
               for(const route of ['dashboard','inventory','trading','checkout','fulfillment','analytics','blockchain']){
