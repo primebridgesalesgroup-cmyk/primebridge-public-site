@@ -59,7 +59,7 @@ jobs:
           for file in pages:
               source=file.read_text(encoding='utf-8')
               for attr in ('src','href'):
-                  pattern=r'<(?:script|link)\\b[^>]*\\b'+attr+r'="([^"]+)"'
+                  pattern=r'<(?:script|link)\b[^>]*\b'+attr+r'="([^"]+)"'
                   for asset in re.findall(pattern,source):
                       if asset.startswith(('http:','https:','//')): continue
                       path=(file.parent/asset.split('?')[0]).resolve()
