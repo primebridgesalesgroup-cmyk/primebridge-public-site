@@ -64,6 +64,79 @@ const detail=document.createElement("p");detail.textContent="Integration pending
 card.append(tag,heading,detail);area.append(card);
 }
 if(page==="dashboard" || page==="blockchain")appendLifecycle(area);
+if(page==="inventory" || page==="trading"){
+  const market=document.createElement("section");
+  market.className="market-workspace";
+  market.setAttribute("aria-label","Interactive illustrative asset market");
+  const head=document.createElement("div");
+  head.className="market-workspace-head";
+  const title=document.createElement("h2");
+  title.textContent="Asset market explorer";
+  const note=document.createElement("p");
+  note.textContent="Interactive demonstration · all assets below are fictional examples, not verified listings or offers.";
+  head.append(title,note);
+  const tools=document.createElement("div");
+  tools.className="market-controls";
+  const search=document.createElement("input");
+  search.type="search";search.placeholder="Search example assets";search.setAttribute("aria-label","Search example assets");
+  const filter=document.createElement("select");
+  filter.setAttribute("aria-label","Filter asset class");
+  for(const name of ["All asset classes","Commodities","Equipment","Energy","Materials","Inventory"]){
+    const option=document.createElement("option");option.value=name;option.textContent=name;filter.append(option);
+  }
+  tools.append(search,filter);
+  const tableWrap=document.createElement("div");
+  tableWrap.className="market-table-scroll";
+  const table=document.createElement("table");
+  table.className="market-table";
+  const thead=document.createElement("thead");
+  const headerRow=document.createElement("tr");
+  for(const name of ["Asset example","Class","Illustrative unit","Verification","Action"]){
+    const cell=document.createElement("th");cell.scope="col";cell.textContent=name;headerRow.append(cell);
+  }
+  thead.append(headerRow);
+  const tbody=document.createElement("tbody");
+  table.append(thead,tbody);tableWrap.append(table);
+  const examples=[
+    ["Industrial copper lot","Commodities","Metric ton"],
+    ["Commercial excavator","Equipment","Unit"],
+    ["Solar generation rights","Energy","Defined right"],
+    ["Structural steel batch","Materials","Metric ton"],
+    ["Warehouse inventory lot","Inventory","Lot"],
+    ["Agricultural grain lot","Commodities","Metric ton"]
+  ];
+  const renderRows=()=>{
+    tbody.replaceChildren();
+    const term=search.value.trim().toLowerCase();
+    const selected=filter.value;
+    const matches=examples.filter(item=>(selected==="All asset classes"||item[1]===selected)&&item.join(" ").toLowerCase().includes(term));
+    for(const item of matches){
+      const row=document.createElement("tr");
+      for(const value of item){
+        const cell=document.createElement("td");cell.textContent=value;row.append(cell);
+      }
+      const status=document.createElement("td");
+      const tag=document.createElement("span");tag.className="market-demo-tag";tag.textContent="NOT VERIFIED · DEMO";
+      status.append(tag);row.append(status);
+      const action=document.createElement("td");
+      const button=document.createElement("button");
+      button.type="button";button.disabled=true;button.textContent="Trading unavailable";
+      button.title="Live orders require verified listings and backend authorization";
+      action.append(button);row.append(action);tbody.append(row);
+    }
+    if(!matches.length){
+      const row=document.createElement("tr");const cell=document.createElement("td");
+      cell.colSpan=5;cell.textContent="No example assets match these filters.";
+      row.append(cell);tbody.append(row);
+    }
+  };
+  search.addEventListener("input",renderRows);
+  filter.addEventListener("change",renderRows);
+  renderRows();
+  market.append(head,tools,tableWrap);
+  area.prepend(market);
+}
+
 if(page==="inventory"){
 const section=document.createElement("section");
 section.className="lifecycle";
