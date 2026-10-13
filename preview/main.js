@@ -60,7 +60,7 @@ for(const name of items){
 const card=document.createElement("article");card.className="card";
 const tag=document.createElement("span");tag.className="tag";tag.textContent="DEVELOPMENT PREVIEW";
 const heading=document.createElement("h2");heading.textContent=name;
-const detail=document.createElement("p");detail.textContent="Integration pending. No live listings, balances, token issuance, orders, or settlement are available.";
+const detail=document.createElement("p");detail.textContent="Preview only. No authenticated API is connected. Integration pending. No live listings, balances, token issuance, orders, or settlement are available.";
 card.append(tag,heading,detail);area.append(card);
 }
 if(page==="dashboard" || page==="blockchain")appendLifecycle(area);
