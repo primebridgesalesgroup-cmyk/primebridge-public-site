@@ -64,6 +64,33 @@ const detail=document.createElement("p");detail.textContent="Integration pending
 card.append(tag,heading,detail);area.append(card);
 }
 if(page==="dashboard" || page==="blockchain")appendLifecycle(area);
+if(page==="inventory"){
+const section=document.createElement("section");
+section.className="lifecycle";
+section.setAttribute("aria-label","Seller asset verification requirements");
+const heading=document.createElement("h2");
+heading.textContent="Seller asset verification";
+const note=document.createElement("p");
+note.textContent="Listing readiness checklist only. This public preview does not collect identity documents, store assets, or issue tokens.";
+const requirements=[
+["Seller identity","Verify the seller and their authority to act"],
+["Asset record","Record asset identity, category, quantity and location"],
+["Ownership evidence","Validate custody, title and transfer restrictions"],
+["Independent review","Confirm eligibility, evidence and asset condition"],
+["Token rights","Define issuance limits, redemption and legal rights"],
+["Listing approval","Authorize a listing before buyers can trade"]
+];
+const grid=document.createElement("div");
+grid.className="lifecycle-steps";
+for(const [name,detail] of requirements){
+const card=document.createElement("article");card.className="card";
+const title=document.createElement("h3");title.textContent=name;
+const text=document.createElement("p");text.textContent=detail;
+card.append(title,text);grid.append(card);
+}
+section.append(heading,note,grid);area.append(section);
+}
+
 for(const link of document.querySelectorAll("[data-view]")){
 if(link.dataset.view===page)link.setAttribute("aria-current","page");
 else link.removeAttribute("aria-current");
