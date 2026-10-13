@@ -41,8 +41,11 @@ jobs:
           (async()=>{
             await new Promise(resolve=>server.listen(8765,'127.0.0.1',resolve));
             const browser=await chromium.launch({headless:true});
+            try {
             for(const viewport of [{width:1440,height:900},{width:390,height:844}]){
               const page=await browser.newPage({viewport});
+              page.setDefaultTimeout(7000);
+              page.setDefaultNavigationTimeout(10000);
               const errors=[];
               page.on('pageerror',e=>errors.push(e.message));
               await page.goto('http://127.0.0.1:8765/',{waitUntil:'networkidle'});
@@ -68,7 +71,7 @@ jobs:
               if(errors.length)throw Error('Browser errors: '+errors.join('; '));
               await page.close();
             }
-            await browser.close();
             console.log('Desktop and mobile browser navigation passed');
+            } finally { await browser.close(); }
           })().catch(e=>{console.error(e);process.exitCode=1}).finally(()=>server.close());
           JS
