@@ -1,0 +1,73 @@
+name: Browser frontend smoke tests
+on:
+  push:
+    branches: [main]
+    paths:
+      - '*.html'
+      - '*.css'
+      - '*.js'
+      - 'preview/**'
+      - '.github/workflows/browser-smoke.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  browser:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Playwright Chromium
+        run: |
+          npm install --no-save playwright@1.56.1
+          npx playwright install --with-deps chromium
+      - name: Verify navigation and mobile layouts
+        run: |
+          node <<'JS'
+          const {chromium}=require('playwright');
+          const http=require('http');
+          const fs=require('fs');
+          const path=require('path');
+          const mime={'.html':'text/html','.css':'text/css','.js':'text/javascript','.xml':'application/xml'};
+          const server=http.createServer((req,res)=>{
+            const pathname=decodeURIComponent(new URL(req.url,'http://localhost').pathname);
+            const target=path.resolve('.', '.'+pathname, pathname.endsWith('/')?'index.html':'');
+            if(!target.startsWith(process.cwd()+path.sep)){res.writeHead(403).end();return;}
+            fs.readFile(target,(err,data)=>{
+              if(err){res.writeHead(404).end();return;}
+              res.writeHead(200,{'Content-Type':mime[path.extname(target)]||'text/plain'}).end(data);
+            });
+          });
+          (async()=>{
+            await new Promise(resolve=>server.listen(8765,'127.0.0.1',resolve));
+            const browser=await chromium.launch({headless:true});
+            for(const viewport of [{width:1440,height:900},{width:390,height:844}]){
+              const page=await browser.newPage({viewport});
+              const errors=[];
+              page.on('pageerror',e=>errors.push(e.message));
+              await page.goto('http://127.0.0.1:8765/',{waitUntil:'networkidle'});
+              if(viewport.width<500)await page.locator('.menu-toggle').click();
+              for(const anchor of ['network','workflow','blockchain','status']){
+                await page.locator('#site-nav a[href="#'+anchor+'"]').click();
+                if(!await page.locator('#'+anchor).count())throw Error('Missing section '+anchor);
+                if(viewport.width<500)await page.locator('.menu-toggle').click();
+              }
+              await page.goto('http://127.0.0.1:8765/blockchain.html');
+              if(viewport.width<500)await page.locator('.menu-toggle').click();
+              await page.getByRole('link',{name:'Ecosystem'}).click();
+              if(!page.url().includes('#network'))throw Error('Blockchain return link broken');
+              await page.goto('http://127.0.0.1:8765/preview/index.html');
+              for(const route of ['dashboard','inventory','trading','checkout','fulfillment','analytics','blockchain']){
+                await page.locator('[data-view="'+route+'"]').click();
+                if(!page.url().endsWith('#'+route))throw Error('Preview route failed '+route);
+                if(await page.locator('[data-view="'+route+'"]').getAttribute('aria-current')!=='page')throw Error('Active tab missing '+route);
+                if(!await page.locator('#content .card').count())throw Error('Empty module '+route);
+              }
+              await page.goto('http://127.0.0.1:8765/preview/index.html#invalid');
+              if(!page.url().endsWith('#dashboard'))throw Error('Invalid route fallback failed');
+              if(errors.length)throw Error('Browser errors: '+errors.join('; '));
+              await page.close();
+            }
+            await browser.close();
+            console.log('Desktop and mobile browser navigation passed');
+          })().catch(e=>{console.error(e);process.exitCode=1}).finally(()=>server.close());
+          JS
