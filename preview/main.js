@@ -8,6 +8,40 @@ fulfillment:["Fulfillment","Asset handoff, shipping and verified delivery",["Ass
 analytics:["Exchange Analytics","Evidence-based operational reporting",["Asset metrics","Trading metrics","Reconciliation exports"]],
 blockchain:["Tokenization & Blockchain","Verified asset rights and transaction evidence",["Asset verification","Tokenization readiness","Blockchain evidence"]]
 };
+const lifecycle = [
+  ["01", "Seller onboarding", "Register the seller and validate identity, eligibility, and authority to list."],
+  ["02", "Asset verification", "Validate evidence, legal rights, asset identity, quantity, and independent approval."],
+  ["03", "Tokenization controls", "Define enforceable rights and check issuance, encumbrance, and redemption limits before any token is created."],
+  ["04", "Exchange matching", "Present eligible listings and require buyer/seller authorization before an order."],
+  ["05", "Settlement & delivery", "Coordinate authorized checkout, payment-provider settlement, and verified asset fulfillment."],
+  ["06", "Audit & reconciliation", "Reconcile inventory, delivery evidence, transaction state, and validated blockchain receipts."]
+];
+function appendLifecycle(area) {
+  const section=document.createElement("section");
+  section.className="lifecycle";
+  section.setAttribute("aria-label","Asset exchange lifecycle");
+  const heading=document.createElement("h2");
+  heading.textContent="How the A+ asset exchange works";
+  const description=document.createElement("p");
+  description.textContent="Planned workflow · informational only · real transactions and token issuance are not enabled.";
+  const steps=document.createElement("div");
+  steps.className="lifecycle-steps";
+  for(const [number,name,detail] of lifecycle) {
+    const card=document.createElement("article");
+    card.className="card lifecycle-step";
+    const marker=document.createElement("span");
+    marker.className="tag";
+    marker.textContent="STEP "+number;
+    const title=document.createElement("h3");
+    title.textContent=name;
+    const body=document.createElement("p");
+    body.textContent=detail;
+    card.append(marker,title,body);
+    steps.append(card);
+  }
+  section.append(heading,description,steps);
+  area.append(section);
+}
 function render(){
 let key="";
 try{key=decodeURIComponent(location.hash.slice(1));}catch{key="dashboard";}
@@ -29,6 +63,7 @@ const heading=document.createElement("h2");heading.textContent=name;
 const detail=document.createElement("p");detail.textContent="Integration pending. No live listings, balances, token issuance, orders, or settlement are available.";
 card.append(tag,heading,detail);area.append(card);
 }
+if(page==="dashboard" || page==="blockchain")appendLifecycle(area);
 for(const link of document.querySelectorAll("[data-view]")){
 if(link.dataset.view===page)link.setAttribute("aria-current","page");
 else link.removeAttribute("aria-current");
