@@ -98,3 +98,18 @@ main{max-width:1550px;padding:36px}
 .asset-readiness-list span{color:#afc1db;font-size:12px}
 .asset-readiness-list small{color:#efc783;font-size:10px;letter-spacing:.1em}
 @media(max-width:720px){.asset-readiness-list{grid-template-columns:1fr}}
+
+
+/* Interactive tokenization explorer in the locked navy / blue / gold design */
+.tokenization-panel{grid-column:1/-1;border:1px solid #3b5d89;border-radius:18px;background:linear-gradient(135deg,#122c50,#0a1a30);padding:27px}
+.tokenization-panel h2{font-size:26px;margin:0 0 10px;color:#f6d18b}
+.tokenization-panel>p{color:#b9cbe5;line-height:1.6}
+.token-stage-tabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:24px 0}
+.token-stage-tabs button{border:1px solid #385980;border-radius:10px;background:#0d203b;color:#dbe7fb;text-align:left;padding:15px;cursor:pointer;font:inherit;font-size:13px;min-height:62px}
+.token-stage-tabs button[aria-pressed=true]{border-color:#efc87b;background:linear-gradient(110deg,#254f8a,#172c4b);color:#fff}
+.token-stage-tabs button:focus-visible{outline:3px solid #f0ca7d;outline-offset:2px}
+.token-stage-detail{padding:24px;border:1px solid #33537c;border-radius:12px;background:#091a31}
+.token-stage-detail h3{font-size:21px;margin:0 0 10px}
+.token-stage-detail p{color:#c2d2e8;line-height:1.6}
+@media(max-width:940px){.token-stage-tabs{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:580px){.tokenization-panel{padding:17px}.token-stage-tabs{grid-template-columns:1fr}}
