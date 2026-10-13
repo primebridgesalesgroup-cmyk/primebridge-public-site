@@ -1,0 +1,44 @@
+name: Publish Prime Bridge public website
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'index.html'
+      - 'styles.css'
+      - '.github/workflows/deploy-pages.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+concurrency:
+  group: public-site-pages
+  cancel-in-progress: false
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate public files
+        run: |
+          test -s index.html
+          test -s styles.css
+          python - <<'PY'
+          from pathlib import Path
+          page=Path("index.html").read_text()
+          assert '<html' in page and 'styles.css' in page
+          assert not any(s in page.lower() for s in ['private key','api_secret','password='])
+          print("Public site validated")
+          PY
+      - uses: actions/configure-pages@v5
+        with:
+          enablement: true
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: .
+      - id: deployment
+        uses: actions/deploy-pages@v4
