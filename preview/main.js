@@ -37,3 +37,27 @@ else link.removeAttribute("aria-current");
 window.addEventListener("hashchange",render);
 window.addEventListener("pageshow",render);
 render();
+
+/**
+ * Opt-in authenticated metadata reader for future same-origin integration.
+ * No token persistence, no automatic requests, no write methods.
+ * Caller supplies a short-lived token directly; never expose it in URLs.
+ */
+async function readScopedMetadata(kind, resourceId, token, fetchImpl = fetch) {
+  const routes = {inventory_batch: "inventory/batches", trade: "trades"};
+  if (!Object.prototype.hasOwnProperty.call(routes, kind) ||
+      typeof resourceId !== "string" ||
+      !/^[A-Za-z0-9][A-Za-z0-9_.-]{0,127}$/.test(resourceId) ||
+      typeof token !== "string" || token.length === 0) {
+    throw new TypeError("Invalid authenticated metadata request");
+  }
+  const response = await fetchImpl(
+    "/api/v1/" + routes[kind] + "/" + encodeURIComponent(resourceId),
+    {method: "GET", credentials: "same-origin", cache: "no-store",
+     headers: {Authorization: "Bearer " + token, Accept: "application/json"}}
+  );
+  if (!response.ok) {
+    throw new Error("Metadata unavailable");
+  }
+  return response.json();
+}
