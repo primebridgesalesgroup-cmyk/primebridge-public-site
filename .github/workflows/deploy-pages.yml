@@ -6,6 +6,9 @@ on:
       - 'index.html'
       - 'styles.css'
       - 'preview/**'
+      - 'blockchain.html'
+      - 'robots.txt'
+      - 'sitemap.xml'
       - '.github/workflows/deploy-pages.yml'
   workflow_dispatch:
 permissions:
