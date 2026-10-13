@@ -55,5 +55,9 @@ jobs:
           preview=(root/'preview/main.js').read_text()
           for route in ('dashboard','inventory','trading','checkout','fulfillment','analytics','blockchain'):
               assert f'{route}:[' in preview, f'Missing preview route: {route}'
-          print(f'Navigation checks passed across {len(pages)} HTML pages')
+          for file in pages:\n              source=file.read_text(encoding='utf-8')\n              import re\n              for attr in ('src','href'):\n                  for asset in re.findall(r'<(?:script|link)\\b[^>]*\\b'+attr+r'="([^"]+)"',source):\n                      if asset.startswith(('http:','https:','//')): continue\n                      path=(file.parent/asset.split('?')[0]).resolve()\n                      assert path.is_file(), f'Missing {attr} asset {asset} in {file}'\n          print(f'Navigation and asset checks passed across {len(pages)} HTML pages')
           PY
+      - name: Check JavaScript syntax
+        run: |
+          node --check site.js
+          node --check preview/main.js
