@@ -50,6 +50,7 @@ if(key && key!==page){history.replaceState(null,"",location.pathname+location.se
 const [title,description,items]=pages[page];
 document.title=title+" | A+ Ecosystem";
 const hero=document.getElementById("home-hero");if(hero)hero.hidden=page!=="dashboard";
+for(const section of document.querySelectorAll(".exchange-overview, .market-panel"))section.hidden=page!=="dashboard";
 const label=document.getElementById("section-label");if(label)label.textContent=page==="dashboard"?"EXPLORE THE PLATFORM":"PLATFORM MODULE";
 document.getElementById("breadcrumb").textContent=title;
 document.getElementById("page-title").textContent=title;
