@@ -85,6 +85,25 @@ jobs:
               await page.locator('input[aria-label="Search example assets"]').fill('copper');
               if(await page.locator('.market-table tbody tr').count()!==1)throw Error('Asset search did not filter examples');
               if(apiRequests.length)throw Error('Public frontend unexpectedly requested private API');
+              // Exercise the dormant private API adapter with a mock, never a live request.
+              const contract=await page.evaluate(async()=>{
+                const calls=[];
+                const mock=async(url,options)=>{
+                  calls.push({url,options});
+                  return {ok:true,json:async()=>({kind:'inventory_batch',resource_id:'example-1',read_only:true})};
+                };
+                const data=await readScopedMetadata('inventory_batch','example-1','test-token',mock);
+                let invalidRejected=false,deniedRejected=false;
+                try{await readScopedMetadata('trade','../invalid','test-token',mock)}catch(e){invalidRejected=e instanceof TypeError}
+                try{await readScopedMetadata('trade','example-2','test-token',async()=>({ok:false,status:403}))}catch(e){deniedRejected=e.message==='Metadata unavailable'}
+                return {calls,data,invalidRejected,deniedRejected};
+              });
+              if(contract.calls.length!==1 || contract.calls[0].url!=='/api/v1/inventory/batches/example-1')throw Error('Metadata route mismatch');
+              const opts=contract.calls[0].options;
+              if(opts.method!=='GET' || opts.credentials!=='same-origin' || opts.cache!=='no-store' || opts.headers.Authorization!=='Bearer test-token')throw Error('Metadata auth/read-only contract mismatch');
+              if(!contract.data.read_only || !contract.invalidRejected || !contract.deniedRejected)throw Error('Metadata safety checks failed');
+              if(apiRequests.length)throw Error('Metadata mock leaked a real API request');
+
               await page.goto('http://127.0.0.1:8765/preview/index.html#invalid');
               await page.waitForURL('**/preview/index.html#dashboard');
               if(errors.length)throw Error('Browser errors: '+errors.join('; '));
