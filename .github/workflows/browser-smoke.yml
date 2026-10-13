@@ -63,7 +63,7 @@ jobs:
               for(const route of ['dashboard','inventory','trading','checkout','fulfillment','analytics','blockchain']){
                 await page.locator('[data-view="'+route+'"]').click();
                 if(!page.url().endsWith('#'+route))throw Error('Preview route failed '+route);
-                if(await page.locator('[data-view="'+route+'"]').getAttribute('aria-current')!=='page')throw Error('Active tab missing '+route);
+                await page.waitForFunction(key=>document.querySelector('[data-view="'+key+'"]')?.getAttribute('aria-current')==='page',route);
                 if(!await page.locator('#content .card').count())throw Error('Empty module '+route);
               }
               await page.goto('http://127.0.0.1:8765/preview/index.html#invalid');
