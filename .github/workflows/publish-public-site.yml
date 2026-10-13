@@ -1,0 +1,50 @@
+name: Publish approved public website
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: public-pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Check out public repository
+        uses: actions/checkout@v4
+      - name: Stage only public website assets
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p _public
+          cp index.html styles.css _public/
+          if [ -f blockchain.html ]; then cp blockchain.html _public/; fi
+          if [ -f script.js ]; then cp script.js _public/; fi
+          if [ -d assets ]; then cp -R assets _public/assets; fi
+          if [ -f CNAME ]; then cp CNAME _public/; fi
+          test -s _public/index.html
+          test -s _public/styles.css
+          if grep -Eiq '(src|href)="(/assets/|/styles.css|/script.js)' _public/index.html; then
+            echo "Root-absolute asset references require review before Pages publishing."
+            exit 1
+          fi
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+      - name: Upload public website
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _public
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
