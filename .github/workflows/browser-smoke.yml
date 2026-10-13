@@ -73,6 +73,7 @@ jobs:
               }
               for(const route of ['inventory','trading','checkout','fulfillment','analytics','blockchain']){
                 await page.locator('[data-view="'+route+'"]').click();
+                await page.waitForFunction(key=>document.querySelector('[data-view="'+key+'"]')?.getAttribute('aria-current')==='page',route);
                 for(const selector of ['.home-hero','.exchange-overview','.market-panel']){
                   if(await page.locator(selector).isVisible())throw Error('Dashboard content leaked into '+route+': '+selector);
                 }
