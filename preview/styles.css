@@ -113,3 +113,6 @@ main{max-width:1550px;padding:36px}
 .token-stage-detail p{color:#c2d2e8;line-height:1.6}
 @media(max-width:940px){.token-stage-tabs{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:580px){.tokenization-panel{padding:17px}.token-stage-tabs{grid-template-columns:1fr}}
+
+/* Route visibility must override section display layouts. */
+.exchange-overview[hidden], .market-panel[hidden], .home-hero[hidden]{display:none!important}
