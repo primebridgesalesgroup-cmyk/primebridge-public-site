@@ -147,13 +147,38 @@ if(page==="inventory" || page==="trading"){
   details.hidden=true;
   const detailTitle=document.createElement("h3");
   const detailText=document.createElement("p");
+  const readiness=document.createElement("section");
+  readiness.className="asset-readiness";
+  readiness.setAttribute("aria-label","Asset tokenization readiness checklist");
+  const readinessTitle=document.createElement("h4");
+  readinessTitle.textContent="Tokenization readiness";
+  const readinessIntro=document.createElement("p");
+  readinessIntro.textContent="All controls must be independently confirmed before a real asset can be tokenized or listed.";
+  const checklist=document.createElement("ul");
+  checklist.className="asset-readiness-list";
+  const checks=[
+    ["Seller identity","KYC and authority to list"],
+    ["Ownership and custody","Evidence of title, possession and encumbrances"],
+    ["Asset inspection","Independent evidence and valuation review"],
+    ["Rights definition","Legally enforceable token rights and redemption terms"],
+    ["Compliance approval","Jurisdiction, transfer restrictions and eligibility"],
+    ["Issuance authorization","Approval, limits and audit evidence"]
+  ];
+  for(const [name,description] of checks){
+    const li=document.createElement("li");
+    const label=document.createElement("strong");label.textContent=name;
+    const info=document.createElement("span");info.textContent=description;
+    const status=document.createElement("small");status.textContent="NOT VERIFIED";
+    li.append(label,info,status);checklist.append(li);
+  }
+  readiness.append(readinessTitle,readinessIntro,checklist);
   const detailStatus=document.createElement("p");
   detailStatus.className="asset-detail-warning";
   detailStatus.textContent="DEMO ONLY · No verified ownership, token issuance, market price, custody or trade authorization.";
   const close=document.createElement("button");
   close.type="button";close.className="asset-detail-close";close.textContent="Close details";
   close.addEventListener("click",()=>{details.hidden=true;search.focus();});
-  details.append(detailTitle,detailText,detailStatus,close);
+  details.append(detailTitle,detailText,readiness,detailStatus,close);
   market.append(head,tools,tableWrap,details);
   area.prepend(market);
 }
