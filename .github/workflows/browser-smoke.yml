@@ -67,7 +67,7 @@ jobs:
                 if(!await page.locator('#content .card').count())throw Error('Empty module '+route);
               }
               await page.goto('http://127.0.0.1:8765/preview/index.html#invalid');
-              if(!page.url().endsWith('#dashboard'))throw Error('Invalid route fallback failed');
+              await page.waitForURL('**/preview/index.html#dashboard');
               if(errors.length)throw Error('Browser errors: '+errors.join('; '));
               await page.close();
             }
