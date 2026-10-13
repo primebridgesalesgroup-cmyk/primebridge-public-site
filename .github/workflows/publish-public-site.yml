@@ -1,8 +1,18 @@
 name: Publish approved public website
-
 on:
   push:
     branches: [main]
+    paths:
+      - 'index.html'
+      - 'styles.css'
+      - 'site.js'
+      - 'blockchain.html'
+      - 'preview/**'
+      - 'assets/**'
+      - 'robots.txt'
+      - 'sitemap.xml'
+      - 'CNAME'
+      - '.github/workflows/publish-public-site.yml'
   workflow_dispatch:
 
 permissions:
@@ -17,34 +27,64 @@ concurrency:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - name: Check out public repository
+      - name: Check out approved public repository
         uses: actions/checkout@v4
-      - name: Stage only public website assets
+      - name: Validate and stage public assets only
         shell: bash
         run: |
           set -euo pipefail
           mkdir -p _public
-          cp index.html styles.css _public/
-          if [ -f blockchain.html ]; then cp blockchain.html _public/; fi
-          if [ -f script.js ]; then cp script.js _public/; fi
+          for file in index.html styles.css site.js blockchain.html robots.txt sitemap.xml; do
+            test -s "$file"
+            cp "$file" _public/
+          done
+          for file in preview/index.html preview/styles.css preview/main.js; do
+            test -s "$file"
+          done
+          cp -R preview _public/preview
           if [ -d assets ]; then cp -R assets _public/assets; fi
-          if [ -f CNAME ]; then cp CNAME _public/; fi
-          test -s _public/index.html
-          test -s _public/styles.css
-          if grep -Eiq '(src|href)="(/assets/|/styles.css|/script.js)' _public/index.html; then
-            echo "Root-absolute asset references require review before Pages publishing."
-            exit 1
-          fi
-      - name: Configure Pages
+          if [ -f CNAME ]; then cp CNAME _public/CNAME; fi
+          python3 - <<'PY'
+          from html.parser import HTMLParser
+          from pathlib import Path
+          from urllib.parse import urlsplit, unquote
+          class Links(HTMLParser):
+              def __init__(self):
+                  super().__init__()
+                  self.links=[]
+              def handle_starttag(self, tag, attrs):
+                  data=dict(attrs)
+                  for key in ('href','src'):
+                      if key in data: self.links.append(data[key])
+          root=Path('_public').resolve()
+          for page in root.rglob('*.html'):
+              parser=Links()
+              parser.feed(page.read_text(encoding='utf-8'))
+              for link in parser.links:
+                  parts=urlsplit(link)
+                  if parts.scheme or parts.netloc or link.startswith(('#','mailto:','tel:','data:','javascript:')): continue
+                  target=unquote(parts.path)
+                  if not target: continue
+                  if target.startswith('/'):
+                      raise SystemExit(f'Root-absolute URL requires review: {page}: {link}')
+                  resolved=(page.parent/target).resolve()
+                  if not resolved.is_relative_to(root) or not resolved.exists():
+                      raise SystemExit(f'Missing or unsafe public asset: {page}: {link}')
+          print('Public pages and local navigation assets verified')
+          PY
+      - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
-      - name: Upload public website
+        with:
+          enablement: true
+      - name: Upload approved public website
         uses: actions/upload-pages-artifact@v3
         with:
           path: _public
-      - name: Deploy to GitHub Pages
+      - name: Deploy GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
