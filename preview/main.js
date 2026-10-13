@@ -64,6 +64,43 @@ const detail=document.createElement("p");detail.textContent="Integration pending
 card.append(tag,heading,detail);area.append(card);
 }
 if(page==="dashboard" || page==="blockchain")appendLifecycle(area);
+if(page==="blockchain"){
+  const panel=document.createElement("section");
+  panel.className="tokenization-panel";
+  panel.setAttribute("aria-label","Tokenization process explorer");
+  const title=document.createElement("h2");title.textContent="Tokenization architecture";
+  const intro=document.createElement("p");
+  intro.textContent="Explore the approval gates for representing real-world asset rights. This is an educational workflow, not an issuance service.";
+  const stages=[
+    ["Asset registration","Create a controlled asset record with seller authority and evidence."],
+    ["Independent verification","Confirm identity, title, custody, quantity, restrictions and independent review."],
+    ["Legal rights mapping","Define exactly what the token represents, who may hold it, and redemption rules."],
+    ["Compliance authorization","Approve eligibility, transfer restrictions, jurisdiction and issuance limits."],
+    ["Controlled issuance","Only an authorized production backend may sign and submit a blockchain transaction."],
+    ["Reconciliation","Compare issuance receipts with the asset registry, inventory, settlement and custody records."]
+  ];
+  const tabs=document.createElement("div");tabs.className="token-stage-tabs";tabs.setAttribute("role","group");tabs.setAttribute("aria-label","Tokenization stages");
+  const detail=document.createElement("div");detail.className="token-stage-detail";
+  const stepName=document.createElement("h3");const stepDescription=document.createElement("p");
+  const stepWarning=document.createElement("p");stepWarning.className="asset-detail-warning";
+  stepWarning.textContent="ARCHITECTURE PREVIEW · No token is created, signed, transferred or issued.";
+  detail.append(stepName,stepDescription,stepWarning);
+  const buttons=[];
+  stages.forEach(([name,description],index)=>{
+    const button=document.createElement("button");button.type="button";
+    button.textContent=String(index+1).padStart(2,"0")+" · "+name;
+    button.addEventListener("click",()=>{
+      buttons.forEach(item=>item.setAttribute("aria-pressed","false"));
+      button.setAttribute("aria-pressed","true");
+      stepName.textContent=name;stepDescription.textContent=description;
+    });
+    tabs.append(button);buttons.push(button);
+  });
+  buttons[0].click();
+  panel.append(title,intro,tabs,detail);
+  area.prepend(panel);
+}
+
 if(page==="inventory" || page==="trading"){
   const market=document.createElement("section");
   market.className="market-workspace";
