@@ -120,8 +120,16 @@ if(page==="inventory" || page==="trading"){
       status.append(tag);row.append(status);
       const action=document.createElement("td");
       const button=document.createElement("button");
-      button.type="button";button.disabled=true;button.textContent="Trading unavailable";
-      button.title="Live orders require verified listings and backend authorization";
+      button.type="button";button.textContent="View example";
+      button.className="market-detail-button";
+      button.addEventListener("click",()=>{
+        detailTitle.textContent=item[0];
+        detailText.textContent="Example asset class: "+item[1]+" · illustrative unit: "+item[2]+". Before any real listing, the seller, asset identity, custody, legal rights and independent verification must be approved.";
+        details.hidden=false;
+        detailTitle.setAttribute("tabindex","-1");
+        detailTitle.focus();
+      });
+      button.title="Open example asset details; live trading is unavailable";
       action.append(button);row.append(action);tbody.append(row);
     }
     if(!matches.length){
@@ -133,7 +141,20 @@ if(page==="inventory" || page==="trading"){
   search.addEventListener("input",renderRows);
   filter.addEventListener("change",renderRows);
   renderRows();
-  market.append(head,tools,tableWrap);
+  const details=document.createElement("aside");
+  details.className="asset-detail-panel";
+  details.setAttribute("aria-label","Selected example asset details");
+  details.hidden=true;
+  const detailTitle=document.createElement("h3");
+  const detailText=document.createElement("p");
+  const detailStatus=document.createElement("p");
+  detailStatus.className="asset-detail-warning";
+  detailStatus.textContent="DEMO ONLY · No verified ownership, token issuance, market price, custody or trade authorization.";
+  const close=document.createElement("button");
+  close.type="button";close.className="asset-detail-close";close.textContent="Close details";
+  close.addEventListener("click",()=>{details.hidden=true;search.focus();});
+  details.append(detailTitle,detailText,detailStatus,close);
+  market.append(head,tools,tableWrap,details);
   area.prepend(market);
 }
 
