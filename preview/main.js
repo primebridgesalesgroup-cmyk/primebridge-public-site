@@ -270,15 +270,21 @@ async function readScopedMetadata(kind, resourceId, token, fetchImpl = fetch) {
       typeof token !== "string" || token.length === 0) {
     throw new TypeError("Invalid authenticated metadata request");
   }
-  const response = await fetchImpl(
-    "/api/v1/" + routes[kind] + "/" + encodeURIComponent(resourceId),
-    {method: "GET", credentials: "same-origin", cache: "no-store",
-     headers: {Authorization: "Bearer " + token, Accept: "application/json"}}
-  );
-  if (!response.ok) {
+  let response;
+  let data;
+  try {
+    response = await fetchImpl(
+      "/api/v1/" + routes[kind] + "/" + encodeURIComponent(resourceId),
+      {method: "GET", credentials: "same-origin", cache: "no-store",
+       signal: AbortSignal.timeout(8000),
+       headers: {Authorization: "Bearer " + token, Accept: "application/json"}}
+    );
+    if (!response.ok) throw new Error("Metadata unavailable");
+    data = await response.json();
+  } catch {
+    // Never expose transport errors, URLs, response bodies, or credentials to UI.
     throw new Error("Metadata unavailable");
   }
-  const data = await response.json();
   if (!data || typeof data !== "object" || Array.isArray(data) ||
       data.kind !== kind || data.resource_id !== resourceId ||
       data.read_only !== true ||
