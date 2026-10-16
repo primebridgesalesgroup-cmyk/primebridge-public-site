@@ -8,6 +8,7 @@ on:
       - 'styles.css'
       - 'site.js'
       - 'blockchain.html'
+      - 'milestones.html'
       - 'preview/**'
       - 'assets/**'
       - 'robots.txt'
@@ -41,7 +42,7 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p _public
-          for file in index.html styles.css site.js blockchain.html robots.txt sitemap.xml; do
+          for file in index.html styles.css site.js blockchain.html milestones.html robots.txt sitemap.xml; do
             test -s "$file"
             cp "$file" _public/
           done
