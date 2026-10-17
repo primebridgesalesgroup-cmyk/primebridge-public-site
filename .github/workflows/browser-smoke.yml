@@ -23,7 +23,9 @@ jobs:
           npm install --no-save playwright@1.56.1
           npx playwright install --with-deps chromium
       - name: Verify local inquiry workflow
-        run: node tests/inquiry-browser.cjs
+        run: |
+          node tests/inquiry-browser.cjs
+          node tests/inquiry-delivery.cjs
       - name: Verify navigation and mobile layouts
         run: |
           node <<'JS'
