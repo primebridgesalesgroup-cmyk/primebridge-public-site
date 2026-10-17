@@ -14,6 +14,7 @@
 .service-list article h2{font-size:25px;margin:12px 0}.service-list article p,.service-list li{color:#c3cfe3;line-height:1.65}
 .service-list ul{padding-left:20px}.service-label{font-size:12px;letter-spacing:.1em;color:#e9bd74;font-weight:800}
 .availability{border-top:1px solid #304c75;padding:36px 0 70px}.availability p{max-width:810px;color:#c3cfe3;line-height:1.65}
+#inquiry-form,#inquiry-draft{max-width:810px}#inquiry-form fieldset{border:1px solid #49699e;border-radius:12px;padding:22px;margin:24px 0}#inquiry-form label,label[for="inquiry-draft"]{display:block;margin:18px 0 8px}#inquiry-form input:not([type="checkbox"]),#inquiry-form select,#inquiry-form textarea,#inquiry-draft{display:block;width:100%;padding:12px;background:#0b182b;color:#f5f8ff;border:1px solid #6e86ad;border-radius:6px;font:inherit}#inquiry-form textarea,#inquiry-draft{resize:vertical}#inquiry-form :focus-visible,#inquiry-draft:focus-visible{outline:3px solid #9db5ff;outline-offset:3px}.inquiry-check{line-height:1.6}button:disabled{opacity:.55;cursor:not-allowed}#inquiry-status{min-height:3em}
 @media(max-width:800px){.service-list{grid-template-columns:1fr}.service-intro{padding-top:44px}.service-list article{padding:22px}}
 </style>
 </head>
@@ -40,7 +41,27 @@
 <article><span class="service-label">05 / CONSULTING ONLY</span><h2>Blockchain Business Solutions</h2><p>Explore evidence and audit-trail architecture based on our development work with Hyperledger Besu.</p><ul><li>Private blockchain architecture discussions</li><li>Document fingerprinting and event-evidence demonstrations</li><li>Asset registration workflow assessments</li></ul><p>Production anchoring and externally verifiable customer-facing services require further testing. Blockchain evidence does not independently establish ownership, payment, delivery, or legal title.</p></article>
 <article><span class="service-label">06 / ENERGY DEVELOPMENT</span><h2>Energy Data &amp; Energy Coin</h2><p>Explore energy-related documentation, asset and data organization, and future technology plans.</p><ul><li>Energy asset documentation and data workflows</li><li>Development architecture consultations by scope</li><li>Energy Coin progress information</li></ul><p>Energy Coin token issuance, live trading, financial settlement, and investments are not offered.</p></article>
 </div>
-<section class="availability" id="inquiries"><div class="wrap"><p class="tag">CUSTOMER INQUIRIES · RELEASE GATE</p><h2>Consultation requests are being prepared.</h2><p>We are preparing a secure way to request project estimates and service consultations. This preview does not collect personal information or accept payment. Customer intake will become available only after contact delivery, privacy disclosures, spam protection, and consent handling are verified.</p><a class="button outline" href="./">Return to Home →</a></div></section>
+<section class="availability" id="inquiries"><div class="wrap">
+<p class="tag">CUSTOMER INQUIRIES · LOCAL PREPARATION ONLY</p>
+<h2>Prepare a consultation or quote inquiry.</h2>
+<p id="inquiry-notice">Delivery is not available yet. This tool prepares a draft on this page only; it does not send a request, book a consultation, or provide a quote. Do not enter contact details, an exact address, financial information, account credentials, or confidential project records. Use a general town or region and a brief, non-sensitive summary.</p>
+<p>Your entries are not saved by this tool and will be lost when you leave or reload. Copying places the draft on your device clipboard. An approved contact destination and privacy notice must be verified before customer delivery opens.</p>
+<noscript><p>Draft preparation requires JavaScript. No inquiry has been sent.</p></noscript>
+<form id="inquiry-form" aria-describedby="inquiry-notice" autocomplete="off">
+<fieldset id="inquiry-fields" disabled><legend>Inquiry details (all fields required)</legend>
+<label for="inquiry-service">Service</label>
+<select id="inquiry-service" name="service" required><option value="">Choose a service</option><option value="property">Construction &amp; Property Solutions</option><option value="assets">Asset Documentation &amp; Inventory</option><option value="business">Business Consulting &amp; Growth</option><option value="merchant">Merchant &amp; Catalog Services</option><option value="blockchain">Blockchain Business Solutions</option><option value="energy">Energy Data &amp; Energy Coin information</option></select>
+<label for="request-kind">Request type</label><select id="request-kind" name="request-kind" required><option value="">Choose a request type</option><option value="consultation">Consultation inquiry</option><option value="quote">Quote inquiry</option></select>
+<label for="inquiry-area">General town or region (no street address)</label><input id="inquiry-area" name="area" maxlength="100" pattern=".*\S.*" required>
+<label for="inquiry-summary">Brief project summary (no personal or confidential information)</label><textarea id="inquiry-summary" name="summary" rows="5" maxlength="1200" required></textarea>
+<label class="inquiry-check"><input type="checkbox" required> I understand this prepares a local draft only and sends nothing.</label>
+<div class="actions"><button type="submit" class="button">Prepare draft</button><button type="reset" class="button outline">Clear draft and fields</button></div>
+</fieldset></form>
+<label for="inquiry-draft">Your draft for review</label><textarea id="inquiry-draft" rows="10" readonly aria-describedby="inquiry-status" autocomplete="off" spellcheck="false"></textarea>
+<div class="actions"><button id="copy-inquiry" type="button" class="button outline" disabled>Copy draft</button></div>
+<p id="inquiry-status" role="status" aria-live="polite">Nothing has been sent. Delivery is not available yet.</p>
+</div></section>
 </main><footer><div class="wrap foot"><span>© 2026 Prime Bridge Sales Group Corp · A+ Global Asset Network</span><span>No live exchange, token issuance, or financial transactions</span></div></footer>
 <script src="site.js" defer></script>
+<script src="inquiry.js" defer></script>
 </body></html>
