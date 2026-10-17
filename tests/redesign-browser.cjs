@@ -55,7 +55,7 @@ const server = http.createServer((req,res) => {
           assert.equal(await page.locator('#draft-details').getAttribute('open'),null);
         }
         if(file==='waitlist.html'){
-          assert.equal(await page.locator('#waitlist-fields').isDisabled(),true);
+          assert.notEqual(await page.locator('#waitlist-fields').getAttribute('disabled'),null);
           assert.equal(await page.locator('#waitlist-send').isDisabled(),true);
           assert.equal(await page.locator('form').count(),1);
         }
