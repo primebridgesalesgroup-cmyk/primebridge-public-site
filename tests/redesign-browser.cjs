@@ -55,9 +55,11 @@ const server = http.createServer((req,res) => {
           assert.equal(await page.locator('#draft-details').getAttribute('open'),null);
         }
         if(file==='waitlist.html'){
-          assert.notEqual(await page.locator('#waitlist-fields').getAttribute('disabled'),null);
-          assert.equal(await page.locator('#waitlist-send').isDisabled(),true);
+          assert.equal(await page.locator('#waitlist-fields').getAttribute('disabled'),null);
+          assert.equal(await page.locator('#waitlist-send').isDisabled(),false);
           assert.equal(await page.locator('form').count(),1);
+          await page.locator('#waitlist-send').click();
+          assert.match(await page.locator('#waitlist-status').innerText(),/No registration has been sent/);
         }
         if(file==='milestones.html')assert.doesNotMatch(await page.locator('main').innerText(),/private pull request|535 Python|checks were still failing/);
         if(process.env.TEST_SCREENSHOT_DIR&&[1440,390].includes(width)&&['index.html','services.html'].includes(file)){
