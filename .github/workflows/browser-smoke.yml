@@ -27,6 +27,7 @@ jobs:
           node tests/inquiry-browser.cjs
           node tests/inquiry-delivery.cjs
           node tests/redesign-browser.cjs
+          node tests/waitlist-browser.cjs
       - name: Verify navigation and mobile layouts
         run: |
           node <<'JS'
