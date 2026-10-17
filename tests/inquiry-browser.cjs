@@ -34,7 +34,7 @@ const server = http.createServer((req, res) => {
       await page.locator('#inquiry-summary').fill('<img src=x onerror=alert(1)> Roof project');
       await page.getByRole('button', { name: 'Prepare draft', exact: true }).click();
       assert.equal(await page.locator('#inquiry-draft').inputValue(), ''); // acknowledgment required
-      await page.getByRole('checkbox').check();
+      await page.locator('#inquiry-form input[type=checkbox]').check();
       await page.getByRole('button', { name: 'Prepare draft', exact: true }).click();
       assert.match(await page.locator('#inquiry-draft').inputValue(), /Quote inquiry/);
       assert.match(await page.locator('#inquiry-draft').inputValue(), /<img src=x/);
@@ -59,7 +59,7 @@ const server = http.createServer((req, res) => {
       await page.getByRole('button', { name: 'Clear draft and fields' }).click();
       assert.equal(await page.locator('#inquiry-summary').inputValue(), '');
       assert.equal(await page.locator('#inquiry-draft').inputValue(), '');
-      assert.equal(await page.getByRole('checkbox').isChecked(), false);
+      assert.equal(await page.locator('#inquiry-form input[type=checkbox]').isChecked(), false);
       assert.deepEqual(await page.evaluate(() => [localStorage.length, sessionStorage.length, document.cookie]), [0, 0, '']);
       assert.deepEqual(requests, []);
       assert.deepEqual(errors, []);
