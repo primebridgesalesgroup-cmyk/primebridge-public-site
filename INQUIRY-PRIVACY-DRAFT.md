@@ -5,7 +5,14 @@ The owner approved a 90-day retention target. The saved provider setting was
 verified after reload as "3 months" on October 16, 2026. Inbox deletion and final
 notice wording still need confirmation before customer activation.
 
-## Proposed customer wording
+## Current review artifacts
+
+The complete customer notice is now prepared in `privacy.html`. The concrete
+monitoring and deletion procedure is in `INQUIRY-INBOX-PROCEDURE.md`. These are
+ready for owner review; delivery remains disabled. The following text records
+the prior proposal and should not be published as a separate policy.
+
+## Earlier proposed customer wording
 
 Prime Bridge Sales Group Corp uses your name, reply email, service choice,
 general town or region, and project summary to assess and respond to your
