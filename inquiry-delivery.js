@@ -1,8 +1,8 @@
 "use strict";
 (() => {
-  // Release gate: enable only after CAPTCHA enforcement, privacy approval, and
-  // synthetic end-to-end inbox verification. This is not an authentication control.
-  const DELIVERY_ENABLED = false;
+  // Enabled for owner-authorized release after protected inbox verification.
+  // This flag is a rollout switch, not an authentication control.
+  const DELIVERY_ENABLED = true;
   // Web3Forms defines this as a public form identifier, never a mailbox credential.
   const ACCESS_KEY = "6aace9f5-88b7-41d8-a387-4b20f43378d7";
   const ENDPOINT = "https://api.web3forms.com/submit";
