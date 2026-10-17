@@ -33,3 +33,13 @@ document.addEventListener("keydown",event=>{
     toggle.focus();
   }
 });
+
+// Identify the current document without changing the existing hash navigation.
+if(nav){
+  for(const link of nav.querySelectorAll('a')){
+    const target=new URL(link.getAttribute('href'),window.location.href);
+    if(!target.hash && target.origin===window.location.origin && target.pathname===window.location.pathname){
+      link.setAttribute('aria-current','page');
+    }
+  }
+}
