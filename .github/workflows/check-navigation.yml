@@ -69,6 +69,7 @@ jobs:
           PY
       - name: Check JavaScript syntax
         run: |
+          node --check inquiry-delivery.js
           node --check inquiry.js
           node --check site.js
           node --check preview/main.js
