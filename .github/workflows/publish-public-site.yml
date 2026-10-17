@@ -10,6 +10,7 @@ on:
       - 'blockchain.html'
       - 'milestones.html'
       - 'services.html'
+      - 'privacy.html'
       - 'inquiry.js'
       - 'inquiry-delivery.js'
       - 'preview/**'
@@ -45,7 +46,7 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p _public
-          for file in index.html styles.css site.js blockchain.html milestones.html services.html inquiry.js inquiry-delivery.js robots.txt sitemap.xml; do
+          for file in index.html styles.css site.js blockchain.html milestones.html services.html privacy.html inquiry.js inquiry-delivery.js robots.txt sitemap.xml; do
             test -s "$file"
             cp "$file" _public/
           done
