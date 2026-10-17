@@ -43,5 +43,6 @@ establish a quote, or accept a project.
   does not delete delivered Gmail copies or separate business records.
 - Add the approved retention wording to the customer form notice before enabling
   delivery, and confirm any required additional business disclosures.
-- Test inbox receipt with clearly labeled synthetic data, check spam folders,
-  and confirm who monitors the inbox and quota warnings.
+- Protected synthetic test APLUS-TEST-20261016-HC1 was accepted; the owner
+  confirmed Gmail receipt on October 16, 2026. Confirm who monitors incoming
+  inquiries and quota warnings before customer launch.
