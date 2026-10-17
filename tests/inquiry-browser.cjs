@@ -25,13 +25,15 @@ const server = http.createServer((req, res) => {
       page.on('pageerror', err => errors.push(err.message));
       await page.goto(url);
       await page.waitForFunction(() => !document.querySelector('#inquiry-fields').disabled);
+      assert.doesNotMatch(await page.locator('main').innerText(), /construction|roofing|renovation|contractor|property owners/i);
+      assert.equal(await page.locator('option[value=property]').count(), 0);
       page.on('request', req => requests.push(req.url()));
       await page.getByRole('button', { name: 'Prepare draft', exact: true }).click();
       assert.equal(await page.locator('#inquiry-draft').inputValue(), '');
-      await page.locator('#inquiry-service').selectOption('property');
+      await page.locator('#inquiry-service').selectOption('assets');
       await page.locator('#request-kind').selectOption('quote');
       await page.locator('#inquiry-area').fill('Hartford');
-      await page.locator('#inquiry-summary').fill('<img src=x onerror=alert(1)> Roof project');
+      await page.locator('#inquiry-summary').fill('<img src=x onerror=alert(1)> Inventory documentation project');
       await page.getByRole('button', { name: 'Prepare draft', exact: true }).click();
       assert.equal(await page.locator('#inquiry-draft').inputValue(), ''); // acknowledgment required
       await page.locator('#inquiry-form input[type=checkbox]').check();
@@ -50,7 +52,7 @@ const server = http.createServer((req, res) => {
       await page.locator('#inquiry-summary').fill('Updated project');
       assert.equal(await page.locator('#inquiry-draft').inputValue(), '');
       assert.equal(await page.locator('#copy-inquiry').isDisabled(), true);
-      for (const service of ['property', 'assets', 'business', 'merchant', 'blockchain', 'energy']) {
+      for (const service of ['assets', 'business', 'merchant', 'blockchain', 'energy']) {
         await page.locator('#inquiry-service').selectOption(service);
         await page.getByRole('button', { name: 'Prepare draft', exact: true }).click();
         assert.match(await page.locator('#inquiry-draft').inputValue(), /Updated project/);
