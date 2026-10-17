@@ -30,15 +30,19 @@ not presented as inbox receipt, a booking, or a quote. Ambiguous responses lock
 resending for that page load and direct the customer to check delivery first.
 This guard does not provide server-side idempotency across reloads or devices.
 
-Observed dashboard settings: CAPTCHA **None**, advanced spam filtering **on**,
+Observed dashboard settings: CAPTCHA **hCaptcha** (saved setting verified after reload on October 16, 2026), advanced spam filtering **on**,
 retention **3 months** (saved setting verified after reload on October 16, 2026), free plan **250 submissions/month**. Domain restriction
 is paid. The public form identifier is not an authorization secret; server-side
 CAPTCHA enforcement is essential before activation.
 
 Before changing the release gate:
 
-1. Enable hCaptcha enforcement in the provider dashboard and verify requests
-   without a token are rejected. Do not bypass a CAPTCHA to test delivery.
+1. hCaptcha is enabled in the provider dashboard and persisted after reload.
+   The real widget loaded on a localhost-only test copy with labeled synthetic
+   fields. Human completion and inbox receipt remain pending. A server-origin
+   negative request returned 403 because the free plan requires client-side use;
+   that response does not prove missing-token enforcement. Verify missing-token
+   rejection from a supported browser origin. Do not bypass a CAPTCHA.
 2. The owner approved a 90-day retention target; the saved Web3Forms setting is
    labeled **3 months**. Confirm a separate Gmail deletion process and approve the
    final customer privacy notice. See `INQUIRY-PRIVACY-DRAFT.md`.
