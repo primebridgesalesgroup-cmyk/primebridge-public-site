@@ -1,7 +1,7 @@
-# Business inquiry inbox procedure — prepared for owner acceptance
+# Business inquiry inbox procedure
 
-Account: primebridgesalesgroup@gmail.com. This procedure is proposed; it has not
-been applied to Gmail. No mailbox access, filters, deletion, or reminders were
+Account: primebridgesalesgroup@gmail.com. The owner accepted responsibility for monitoring and cleanup on October 16, 2026.
+This procedure has not been applied automatically to Gmail. No mailbox access, filters, deletion, or reminders were
 created by this development task.
 
 ## Daily intake
@@ -62,10 +62,9 @@ separately; provider retention does not remove delivered inbox copies.
 
 ## Before customer activation
 
-The owner must accept responsibility for inbox monitoring, quota warnings and
-the manual deletion schedule, or designate another responsible person. Review
-`privacy.html` as the customer notice. Remove its release-review banner only
-after approval. Keep delivery disabled until these decisions are recorded.
+The owner accepted monitoring and cleanup responsibility and authorized release.
+`privacy.html` is the customer notice. Confirm staffing and review arrangements
+remain workable as inquiry volume changes.
 
 No recurring reminder was created; scheduling one requires an owner request.
 
