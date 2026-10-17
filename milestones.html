@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#071123">
+<meta name="description" content="A+ Global Asset Network public development milestones: verified progress, current release gates and upcoming work.">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://primebridgesalesgroup.org/milestones.html">
+<title>Development Milestones | A+ Global Asset Network</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="header"><div class="wrap nav">
+<a class="brand" href="./" aria-label="A+ Global Asset Network home"><span class="brand-symbol">A<span>+</span></span><span>A+ <small>GLOBAL ASSET NETWORK</small></span></a>
+<button class="menu-toggle" aria-controls="site-nav" aria-expanded="false" type="button">Menu ☰</button>
+<nav id="site-nav" aria-label="Main navigation">
+<a href="./#platform">Platform</a><a href="./#solutions">Solutions</a>
+<a href="milestones.html" aria-current="page">Milestones</a>
+<a href="blockchain.html">Blockchain</a>
+<a class="nav-primary" href="preview/index.html">Exchange Preview ↗</a>
+</nav></div></header>
+<main id="main">
+<section class="hero"><div class="wrap" style="padding-top:80px;padding-bottom:70px">
+<p class="tag">A+ DEVELOPMENT PROGRESS · UPDATED OCTOBER 16, 2026</p>
+<h1 style="font-size:clamp(40px,5vw,72px);max-width:1050px">Building the network.<br><em>Verifying every milestone.</em></h1>
+<p class="lead">This is a public record of engineering progress, not a live trading dashboard. Local development verification is separate from production launch approval.</p>
+<div class="actions"><a class="button" href="#verified">Verified progress ↗</a><a class="button outline" href="#next">Next release gates →</a></div>
+<p class="disclosure">DEVELOPMENT STATUS · No public token issuance, trading, payments or settlement available.</p>
+</div></section>
+<section id="verified" class="wrap asset-story">
+<div class="asset-story-heading"><p class="tag">VERIFIED ENGINEERING</p><h2>Progress we can <em>substantiate.</em></h2><p>These milestones reflect the most recent recorded development checks. They do not assert continuous uptime or production readiness.</p></div>
+<div class="asset-story-grid">
+<article><span>01 / VERIFIED LOCALLY</span><h3>Private blockchain consensus</h3><p>A four-validator Hyperledger Besu QBFT development network passed a local consensus and peer-connectivity check. Validators were configured as managed services on a dedicated Debian computer.</p></article>
+<article><span>02 / VERIFIED LOCALLY</span><h3>535 Python tests passed</h3><p>The full A+ Python unit-test suite completed on the development machine with 535 tests passing and no reported failures.</p></article>
+<article><span>03 / PUBLIC PREVIEW</span><h3>Exchange interface</h3><p>The public repository contains an informational A+ Exchange preview for inventory, trading, checkout, fulfillment, analytics and blockchain architecture. Preview screens are not live accounts or financial transactions.</p></article>
+</div>
+</section>
+<section class="mission" id="in-progress"><div class="wrap mission-grid"><div><p class="tag">IN PROGRESS</p><h2>Validation before <em>release.</em></h2></div><div>
+<p>Blockchain dashboard evidence integration is under review in private pull request #165. Its local Python tests passed, but GitHub Actions checks were still failing at the latest review, so the change is not reported as merged.</p>
+<p>The private-to-public preview synchronization also requires validation: the reviewed public preview markup matched private source, while its stylesheet and JavaScript differed.</p>
+<p>Private source code, credentials, validator keys and administrative controls are not published to this website.</p>
+</div></div></section>
+<section id="next" class="wrap asset-story">
+<div class="asset-story-heading"><p class="tag">UPCOMING RELEASE GATES</p><h2>What needs to happen <em>next.</em></h2></div>
+<div class="asset-story-grid">
+<article><span>04 / PENDING</span><h3>CI and deployment</h3><p>Resolve GitHub workflow failures, validate public navigation and mobile rendering, and verify a successful deployment to the configured domain.</p></article>
+<article><span>05 / PENDING</span><h3>End-to-end asset evidence</h3><p>Connect verified asset records and approved transaction events to auditable blockchain evidence with explicit authorization and security testing.</p></article>
+<article><span>06 / DEVELOPMENT</span><h3>Energy Coin and settlement</h3><p>Continue technical, compliance and operational review. No public sale, investment returns, live token issuance or settlement functionality is offered.</p></article>
+</div>
+<div class="asset-story-cta"><a class="button" href="blockchain.html">Blockchain architecture →</a><a class="button outline" href="preview/index.html">Explore interface preview →</a></div>
+</section>
+</main>
+<footer><div class="wrap foot"><span>© <span id="year">2026</span> Prime Bridge Sales Group Corp · A+ Global Asset Network</span><span>Milestone statuses reflect documented development checks, not live service guarantees.</span></div></footer>
+<script src="site.js" defer></script>
+</body></html>
