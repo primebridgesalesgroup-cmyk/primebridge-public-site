@@ -1,8 +1,9 @@
 # Proposed inquiry privacy notice — owner review required
 
 This is proposed wording, not a published policy. Delivery remains disabled.
-The owner must confirm the retention periods and ability to handle deletion
-requests before this notice is used with an active customer form.
+The owner approved a 90-day retention target. The saved provider setting was
+verified after reload as "3 months" on October 16, 2026. Inbox deletion and final
+notice wording still need confirmation before customer activation.
 
 ## Proposed customer wording
 
@@ -16,10 +17,11 @@ our business Gmail inbox. Loading the spam check connects to Web3Forms and
 hCaptcha. Their services process technical request information as described in
 their privacy notices. Our form does not save your entries in browser storage.
 
-We propose keeping inquiries that do not lead to an engagement for up to 90 days
-in the form service and business inbox. If you engage us, we would explain the
-separate recordkeeping arrangements for that engagement. This 90-day proposal
-has not yet been approved or configured.
+Web3Forms is configured to delete submissions after its three-month retention
+period. Our owner-approved target for inquiries that do not lead to an engagement
+is 90 days. Gmail copies require separate deletion; a process to meet that target
+in the business inbox must be confirmed before launch. If you engage us, separate
+recordkeeping arrangements would be explained for that engagement.
 
 Submitting an inquiry asks us to reply about that inquiry; it does not subscribe
 you to marketing. Contact primebridgesalesgroup@gmail.com to ask about access,
@@ -32,9 +34,11 @@ establish a quote, or accept a project.
 
 ## Decisions and checks still needed
 
-- Owner approval or revision of the proposed 90-day period and notice wording.
-- Current Web3Forms dashboard setting was observed as **3 years**. Do not claim
-  90-day automatic deletion until the corresponding setting is saved and checked.
+- Retention target approved by the owner: **90 days**. Provider setting verified
+  after reload: **3 months**. Do not claim an exact 90-day provider cutoff solely
+  from that calendar-month label.
+- Final notice wording remains for owner review; retention approval alone does
+  not approve the entire privacy notice.
 - Business inbox deletion must be managed separately; changing provider retention
   does not delete delivered Gmail copies or separate business records.
 - Add the approved retention wording to the customer form notice before enabling
