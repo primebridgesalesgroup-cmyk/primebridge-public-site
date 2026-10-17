@@ -37,21 +37,22 @@ CAPTCHA enforcement is essential before activation.
 
 Before changing the release gate:
 
-1. hCaptcha is enabled in the provider dashboard and persisted after reload.
-   The real widget loaded on a localhost-only test copy with labeled synthetic
-   fields. Human completion and inbox receipt remain pending. A server-origin
-   negative request returned 403 because the free plan requires client-side use;
-   that response does not prove missing-token enforcement. Verify missing-token
-   rejection from a supported browser origin. Do not bypass a CAPTCHA.
+1. hCaptcha is enabled and persisted after reload. Protected synthetic test
+   **APLUS-TEST-20261016-HC1** was accepted by the real provider; the owner confirmed
+   Gmail receipt on October 16, 2026. The browser showed fields cleared and send
+   disabled after acceptance. A separate browser-origin native form submission
+   without a CAPTCHA token was rejected with **hCaptcha Token is mandatory for
+   this form**. Earlier server-origin 403 was inconclusive and is superseded by
+   this browser-origin rejection test. No CAPTCHA was bypassed.
 2. The owner approved a 90-day retention target; the saved Web3Forms setting is
    labeled **3 months**. Confirm a separate Gmail deletion process and approve the
    final customer privacy notice. See `INQUIRY-PRIVACY-DRAFT.md`.
 3. Add approved retention wording to the customer-facing notice. The hidden
    draft panel alone is not a final privacy policy.
-4. Send one labeled synthetic inquiry through the protected form and obtain owner
-   confirmation of inbox receipt. Verify errors and quota handling; no automatic
-   retry is performed because the provider does not supply documented idempotency
-   for this flow.
+4. Protected synthetic delivery and owner inbox confirmation passed as recorded
+   above. Error and quota handling passed with mocks; exhausting the real free
+   allowance was not tested. No automatic retry is performed because the provider
+   does not supply documented idempotency for this flow.
 5. Enable only on the reviewed draft branch for final browser verification; keep
    merge and deployment as separate release decisions.
 
@@ -101,3 +102,15 @@ For an installed browser, set `TEST_BROWSER_PATH` to its executable. The existin
 navigation and browser smoke workflows also run on pull requests. Publishing
 includes `services.html` and `inquiry.js` in its explicit public asset allowlist;
 this change does not execute a deployment.
+
+## Verified delivery evidence and limits
+
+- Test origin: localhost-only copy of the reviewed frontend with delivery enabled
+  locally; the public branch delivery flag remains false.
+- Synthetic reference: APLUS-TEST-20261016-HC1. Provider accepted it; inbox receipt
+  was confirmed directly by the owner, not independently read through Gmail.
+- Missing-token negative test: browser-origin request rejected by provider with
+  the mandatory hCaptcha token error; this is distinct from client validation.
+- Production-domain delivery, final notice approval, business inbox deletion,
+  PR #28 dependency reconciliation, and release review remain separate gates.
+- No merge, deployment, private infrastructure access, or live customer rollout.
