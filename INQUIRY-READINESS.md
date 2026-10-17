@@ -31,7 +31,7 @@ resending for that page load and direct the customer to check delivery first.
 This guard does not provide server-side idempotency across reloads or devices.
 
 Observed dashboard settings: CAPTCHA **None**, advanced spam filtering **on**,
-retention **3 years**, free plan **250 submissions/month**. Domain restriction
+retention **3 months** (saved setting verified after reload on October 16, 2026), free plan **250 submissions/month**. Domain restriction
 is paid. The public form identifier is not an authorization secret; server-side
 CAPTCHA enforcement is essential before activation.
 
@@ -39,8 +39,9 @@ Before changing the release gate:
 
 1. Enable hCaptcha enforcement in the provider dashboard and verify requests
    without a token are rejected. Do not bypass a CAPTCHA to test delivery.
-2. Approve and configure retention and the customer privacy notice. See
-   `INQUIRY-PRIVACY-DRAFT.md`; the proposed 90 days is not yet configured.
+2. The owner approved a 90-day retention target; the saved Web3Forms setting is
+   labeled **3 months**. Confirm a separate Gmail deletion process and approve the
+   final customer privacy notice. See `INQUIRY-PRIVACY-DRAFT.md`.
 3. Add approved retention wording to the customer-facing notice. The hidden
    draft panel alone is not a final privacy policy.
 4. Send one labeled synthetic inquiry through the protected form and obtain owner
