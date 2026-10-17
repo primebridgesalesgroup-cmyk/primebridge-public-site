@@ -32,7 +32,7 @@
       "Scope, qualifications, availability, and pricing require separate confirmation."
     ].join("\n");
     copy.disabled = false;
-    status.textContent = "Draft ready for review. Nothing has been sent. Delivery is not available yet.";
+    status.textContent = "Draft ready for review. Nothing has been sent. Use the protected inquiry form to send a request.";
     output.focus();
   });
   copy.addEventListener("click", async () => {
