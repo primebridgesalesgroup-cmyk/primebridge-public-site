@@ -24,12 +24,13 @@ const server = http.createServer((req,res) => {
       const errors=[],external=[];
       page.on('pageerror',err=>errors.push(err.message));
       page.on('request',req=>{if(!req.url().startsWith(base))external.push(req.url());});
-      for(const file of ['index.html','services.html','milestones.html','blockchain.html','privacy.html','preview/index.html']){
+      for(const file of ['index.html','services.html','milestones.html','blockchain.html','privacy.html','waitlist.html','preview/index.html']){
         await page.goto(base+'/'+file);
         assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true,`${width}px overflow: ${file}`);
         assert.equal(await page.locator('h1').count(),1,file);
         if(file!=='preview/index.html'){
-          assert.equal(await page.locator('#site-nav a').count(),8,file);
+          const expectedLinks = file==='index.html' ? 9 : file==='waitlist.html' ? 6 : 8;
+          assert.equal(await page.locator('#site-nav a').count(),expectedLinks,file);
           const collapsed=await page.locator('.menu-toggle').isVisible();
           if(collapsed){
             await page.locator('.menu-toggle').click();
@@ -53,6 +54,11 @@ const server = http.createServer((req,res) => {
           assert.equal(await page.locator('option[value=property]').count(),0);
           assert.equal(await page.locator('#draft-details').getAttribute('open'),null);
         }
+        if(file==='waitlist.html'){
+          assert.equal(await page.locator('#waitlist-fields').isDisabled(),true);
+          assert.equal(await page.locator('#waitlist-send').isDisabled(),true);
+          assert.equal(await page.locator('form').count(),1);
+        }
         if(file==='milestones.html')assert.doesNotMatch(await page.locator('main').innerText(),/private pull request|535 Python|checks were still failing/);
         if(process.env.TEST_SCREENSHOT_DIR&&[1440,390].includes(width)&&['index.html','services.html'].includes(file)){
           fs.mkdirSync(process.env.TEST_SCREENSHOT_DIR,{recursive:true});
@@ -64,6 +70,6 @@ const server = http.createServer((req,res) => {
       assert.deepEqual(external,[],'No third-party script should load before a customer requests CAPTCHA');
       await page.close();
     }
-    console.log('Redesign passed: six pages at 1440/1024/768/390/320px, menus/Escape, button contrast, no overflow, form readiness, retired-sector removal, no automatic third-party requests');
+    console.log('Redesign passed: seven pages at 1440/1024/768/390/320px, menus/Escape, button contrast, no overflow, form readiness, retired-sector removal, no automatic third-party requests');
   }finally{await browser.close();}
 })().catch(err=>{console.error(err);process.exitCode=1;}).finally(()=>server.close());
