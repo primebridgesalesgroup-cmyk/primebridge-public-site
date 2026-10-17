@@ -14,7 +14,7 @@
 .service-list article h2{font-size:25px;margin:12px 0}.service-list article p,.service-list li{color:#c3cfe3;line-height:1.65}
 .service-list ul{padding-left:20px}.service-label{font-size:12px;letter-spacing:.1em;color:#e9bd74;font-weight:800}
 .availability{border-top:1px solid #304c75;padding:36px 0 70px}.availability p{max-width:810px;color:#c3cfe3;line-height:1.65}
-#inquiry-form,#inquiry-draft{max-width:810px}#inquiry-form fieldset{border:1px solid #49699e;border-radius:12px;padding:22px;margin:24px 0}#inquiry-form label,label[for="inquiry-draft"]{display:block;margin:18px 0 8px}#inquiry-form input:not([type="checkbox"]),#inquiry-form select,#inquiry-form textarea,#inquiry-draft{display:block;width:100%;padding:12px;background:#0b182b;color:#f5f8ff;border:1px solid #6e86ad;border-radius:6px;font:inherit}#inquiry-form textarea,#inquiry-draft{resize:vertical}#inquiry-form :focus-visible,#inquiry-draft:focus-visible{outline:3px solid #9db5ff;outline-offset:3px}.inquiry-check{line-height:1.6}button:disabled{opacity:.55;cursor:not-allowed}#inquiry-status{min-height:3em}
+#inquiry-form,#delivery-form,#inquiry-draft{max-width:810px}#inquiry-form fieldset,#delivery-form fieldset{border:1px solid #49699e;border-radius:12px;padding:22px;margin:24px 0}#inquiry-form label,#delivery-form label,label[for="inquiry-draft"]{display:block;margin:18px 0 8px}#delivery-form input:not([type="checkbox"]),#delivery-form select,#delivery-form textarea,#inquiry-form input:not([type="checkbox"]),#inquiry-form select,#inquiry-form textarea,#inquiry-draft{display:block;width:100%;padding:12px;background:#0b182b;color:#f5f8ff;border:1px solid #6e86ad;border-radius:6px;font:inherit}#inquiry-form textarea,#inquiry-draft{resize:vertical}#delivery-form :focus-visible,#inquiry-form :focus-visible,#inquiry-draft:focus-visible{outline:3px solid #9db5ff;outline-offset:3px}.inquiry-check{line-height:1.6}button:disabled{opacity:.55;cursor:not-allowed}#inquiry-status{min-height:3em}
 @media(max-width:800px){.service-list{grid-template-columns:1fr}.service-intro{padding-top:44px}.service-list article{padding:22px}}
 </style>
 </head>
@@ -61,7 +61,27 @@
 <div class="actions"><button id="copy-inquiry" type="button" class="button outline" disabled>Copy draft</button></div>
 <p id="inquiry-status" role="status" aria-live="polite">Nothing has been sent. Delivery is not available yet.</p>
 </div></section>
+<section class="availability" id="inquiry-delivery" hidden><div class="wrap">
+<p class="tag">CUSTOMER CONSULTATIONS &amp; QUOTE INQUIRIES</p><h2>Send a service inquiry.</h2>
+<p id="delivery-notice">Prime Bridge Sales Group Corp uses your name, reply email, service choice, general area, and project summary to assess and respond to your request. Sending shares these details with Web3Forms for processing and delivery to primebridgesalesgroup@gmail.com. This is not a marketing signup. Do not send an exact address, financial details, credentials, attachments, or confidential records.</p>
+<p>Loading the spam check connects to Web3Forms and hCaptcha. Review <a href="https://web3forms.com/privacy" target="_blank" rel="noopener noreferrer">Web3Forms privacy information</a> and <a href="https://www.hcaptcha.com/privacy" target="_blank" rel="noopener noreferrer">hCaptcha privacy information</a>. Contact primebridgesalesgroup@gmail.com about your inquiry data. An inquiry does not book a consultation, establish a price, or engage a contractor.</p>
+<form id="delivery-form" aria-describedby="delivery-notice delivery-status" autocomplete="off">
+<fieldset id="delivery-fields" disabled><legend>Contact and project details (all fields required)</legend>
+<label for="delivery-name">Name</label><input id="delivery-name" name="name" maxlength="100" required>
+<label for="delivery-email">Reply email</label><input id="delivery-email" name="email" type="email" maxlength="254" required>
+<label for="delivery-service">Service</label><select id="delivery-service" name="service" required><option value="">Choose a service</option><option value="property">Construction &amp; Property Solutions</option><option value="assets">Asset Documentation &amp; Inventory</option><option value="business">Business Consulting &amp; Growth</option><option value="merchant">Merchant &amp; Catalog Services</option><option value="blockchain">Blockchain Business Solutions</option><option value="energy">Energy Data &amp; Energy Coin information</option></select>
+<label for="delivery-kind">Request type</label><select id="delivery-kind" name="request_type" required><option value="">Choose a request type</option><option value="consultation">Consultation inquiry</option><option value="quote">Quote inquiry</option></select>
+<label for="delivery-area">General town or region (no street address)</label><input id="delivery-area" name="area" maxlength="100" required>
+<label for="delivery-message">Brief project summary (no confidential information)</label><textarea id="delivery-message" name="message" rows="5" maxlength="1200" required></textarea>
+<input type="checkbox" name="botcheck" hidden tabindex="-1" autocomplete="off" aria-hidden="true">
+<label class="inquiry-check"><input id="delivery-consent" type="checkbox" required> I have read the inquiry notice and request a reply about this project.</label>
+<button id="load-inquiry-captcha" type="button" class="button outline">Load spam check</button>
+<div class="h-captcha" data-captcha="true" data-theme="dark" data-size="compact"></div>
+<div class="actions"><button id="send-inquiry" type="submit" class="button">Send inquiry</button><button type="reset" class="button outline">Clear contact fields</button></div>
+</fieldset></form><p id="delivery-status" role="status" aria-live="polite">No inquiry has been sent.</p>
+</div></section>
 </main><footer><div class="wrap foot"><span>© 2026 Prime Bridge Sales Group Corp · A+ Global Asset Network</span><span>No live exchange, token issuance, or financial transactions</span></div></footer>
 <script src="site.js" defer></script>
 <script src="inquiry.js" defer></script>
+<script src="inquiry-delivery.js" defer></script>
 </body></html>
