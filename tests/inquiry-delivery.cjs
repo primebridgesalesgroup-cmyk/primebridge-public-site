@@ -18,8 +18,9 @@ const server = http.createServer((req, res) => {
   const origin = `http://127.0.0.1:${server.address().port}`;
   const browser = await chromium.launch({ headless: true, ...(process.env.TEST_BROWSER_PATH ? { executablePath: process.env.TEST_BROWSER_PATH } : {}) });
   try {
-    // Shipped gate: no contact collection, CAPTCHA load, or delivery requests.
+    // Rollback gate: disabled delivery must never load CAPTCHA or send requests.
     const locked = await browser.newPage();
+    await locked.route('**/inquiry-delivery.js', route => route.fulfill({ contentType: 'text/javascript', body: fs.readFileSync(path.join(root, 'inquiry-delivery.js'), 'utf8').replace('const DELIVERY_ENABLED = true;', 'const DELIVERY_ENABLED = false;') }));
     const network = [];
     locked.on('request', req => { if (!req.url().startsWith(origin)) network.push(req.url()); });
     await locked.goto(origin + '/services.html');
