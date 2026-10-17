@@ -1,5 +1,6 @@
 name: Check public navigation
 on:
+  pull_request:
   push:
     branches: [main]
     paths:
@@ -68,5 +69,6 @@ jobs:
           PY
       - name: Check JavaScript syntax
         run: |
+          node --check inquiry.js
           node --check site.js
           node --check preview/main.js
