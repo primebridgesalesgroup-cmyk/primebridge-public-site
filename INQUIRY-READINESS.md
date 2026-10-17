@@ -8,6 +8,52 @@ Copying is an explicit device clipboard action. Edits invalidate the draft;
 clearing resets the fields. JavaScript failure leaves the form disabled.
 This is preparation tooling, not an activated lead-delivery service.
 
+## Web3Forms integration prepared
+
+The owner selected Web3Forms Free and primebridgesalesgroup@gmail.com. The
+onboarding UI confirmed the form is ready and identifies its key as public.
+The dashboard recipient matches the owner's address. No mailbox credential or
+private infrastructure is used in the frontend.
+
+`inquiry-delivery.js` contains a separate delivery flow with `DELIVERY_ENABLED`
+set to `false`. Its contact panel is hidden and disabled, and no CAPTCHA script
+or submission request loads in the shipped state. Tests exercise the enabled
+flow by replacing the gate in a local-only fixture and intercepting all external
+requests. Mock success proves handling, not real inbox delivery.
+
+The prepared flow loads hCaptcha on customer request, requires a token and inquiry
+acknowledgment, and sends only allowed fields to the fixed Web3Forms HTTPS endpoint.
+It disables concurrent submission, omits cookies and referrer, has a 15-second
+timeout, retains inputs on failures, and never displays raw provider messages.
+Only an explicit successful provider response clears the fields. Acceptance is
+not presented as inbox receipt, a booking, or a quote. Ambiguous responses lock
+resending for that page load and direct the customer to check delivery first.
+This guard does not provide server-side idempotency across reloads or devices.
+
+Observed dashboard settings: CAPTCHA **None**, advanced spam filtering **on**,
+retention **3 years**, free plan **250 submissions/month**. Domain restriction
+is paid. The public form identifier is not an authorization secret; server-side
+CAPTCHA enforcement is essential before activation.
+
+Before changing the release gate:
+
+1. Enable hCaptcha enforcement in the provider dashboard and verify requests
+   without a token are rejected. Do not bypass a CAPTCHA to test delivery.
+2. Approve and configure retention and the customer privacy notice. See
+   `INQUIRY-PRIVACY-DRAFT.md`; the proposed 90 days is not yet configured.
+3. Add approved retention wording to the customer-facing notice. The hidden
+   draft panel alone is not a final privacy policy.
+4. Send one labeled synthetic inquiry through the protected form and obtain owner
+   confirmation of inbox receipt. Verify errors and quota handling; no automatic
+   retry is performed because the provider does not supply documented idempotency
+   for this flow.
+5. Enable only on the reviewed draft branch for final browser verification; keep
+   merge and deployment as separate release decisions.
+
+Provider integration references:
+- https://docs.web3forms.com/getting-started/customizations/spam-protection/hcaptcha
+- https://docs.web3forms.com/getting-started/examples/ajax-contact-form-using-javascript
+
 ## Owner setup needed before delivery
 
 1. Choose a business-controlled inbox and confirm who monitors it. Verify access
