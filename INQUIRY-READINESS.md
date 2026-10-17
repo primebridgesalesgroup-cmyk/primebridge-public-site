@@ -47,8 +47,12 @@ Before changing the release gate:
 2. The owner approved a 90-day retention target; the saved Web3Forms setting is
    labeled **3 months**. Confirm a separate Gmail deletion process and approve the
    final customer privacy notice. See `INQUIRY-PRIVACY-DRAFT.md`.
-3. Add approved retention wording to the customer-facing notice. The hidden
-   draft panel alone is not a final privacy policy.
+3. `privacy.html` now contains the complete prepared customer notice and the
+   hidden delivery panel links to it with a retention summary. Owner review of
+   the notice and acceptance of `INQUIRY-INBOX-PROCEDURE.md` remain pending. The
+   guide proposes daily inbox checks and weekly review before day 83, with exact
+   closed messages permanently removed by the 90-day target after owner review.
+   It does not configure Gmail or authorize automated deletion.
 4. Protected synthetic delivery and owner inbox confirmation passed as recorded
    above. Error and quota handling passed with mocks; exhausting the real free
    allowance was not tested. No automatic retry is performed because the provider
@@ -100,7 +104,8 @@ Provider integration references:
 `node tests/inquiry-browser.cjs` runs the inquiry checks with Playwright Chromium.
 For an installed browser, set `TEST_BROWSER_PATH` to its executable. The existing
 navigation and browser smoke workflows also run on pull requests. Publishing
-includes `services.html` and `inquiry.js` in its explicit public asset allowlist;
+includes the Services page, privacy notice and inquiry scripts in its explicit
+public asset allowlist;
 this change does not execute a deployment.
 
 ## Verified delivery evidence and limits
