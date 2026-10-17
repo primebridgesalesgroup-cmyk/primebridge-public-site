@@ -26,6 +26,7 @@ jobs:
         run: |
           node tests/inquiry-browser.cjs
           node tests/inquiry-delivery.cjs
+          node tests/redesign-browser.cjs
       - name: Verify navigation and mobile layouts
         run: |
           node <<'JS'
@@ -55,10 +56,10 @@ jobs:
               page.on('pageerror',e=>errors.push(e.message));
               await page.goto('http://127.0.0.1:8765/',{waitUntil:'networkidle'});
               if(viewport.width<500)await page.locator('.menu-toggle').click();
-              for(const anchor of ['platform','solutions','partners','mission']){
+              for(const anchor of ['platform','partners']){
                 await page.locator('#site-nav a[href="#'+anchor+'"]').click();
                 if(!await page.locator('#'+anchor).count())throw Error('Missing section '+anchor);
-                if(viewport.width<500 && anchor!=='mission')await page.locator('.menu-toggle').click();
+                if(viewport.width<500 && anchor!=='partners')await page.locator('.menu-toggle').click();
               }
               await page.goto('http://127.0.0.1:8765/blockchain.html');
               if(viewport.width<500)await page.locator('.menu-toggle').click();
