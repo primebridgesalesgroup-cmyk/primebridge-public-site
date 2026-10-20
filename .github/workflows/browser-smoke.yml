@@ -67,7 +67,7 @@ jobs:
               if(!await page.locator('#roadmap').count())throw Error('Customer roadmap missing');
               await page.locator('.header .brand').click();
               if(new URL(page.url()).pathname!=='/')throw Error('Return to website entry broken');
-              if(!await page.locator('#site-nav a[href="dashboard.html#account"]').count())throw Error('Customer access destination missing');
+              if(!await page.locator('#site-nav a[href="signin.html"]').count())throw Error('Customer access destination missing');
               await page.goto('http://127.0.0.1:8765/preview/index.html');
               for(const route of ['dashboard','inventory','trading','checkout','fulfillment','analytics','blockchain']){
                 await page.locator('[data-view="'+route+'"]').click();

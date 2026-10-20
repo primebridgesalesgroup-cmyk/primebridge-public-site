@@ -48,3 +48,27 @@ The homepage replaces the long introductory layout with the workspace entry and
 service directory. Older marketplace demonstrations remain at their original
 preview URL for reference; this dashboard never loads their example data. Stripe
 sandbox links remain separate and are not the primary homepage call to action.
+
+## Approved visual implementation — 20 October 2026
+
+The entry page now uses the approved globe/charcoal/violet composition.
+`signin.html` renders the matching split account-access screen; credentials and
+passkey actions are disabled until the identity backend is connected. The access
+form has no active submission path and must not be presented as working login.
+Registration/recovery links explain current availability without accepting data.
+
+The ledger opens on Portfolio with the full sidebar, notification dialog,
+selected-account Receive view and clipboard action, Assets with Balance/Value/
+Status columns, and a separate Settings view for wallet network information.
+`portfolio.js` plots only successful native-balance observations from the current
+page session, scoped to the account/network. Two reads are needed for a chart.
+Time filters select existing observations; no month/year values are synthesized.
+Market pricing, fiat total and historical portfolio value remain unavailable.
+No unsupported APEC supply, price, order, transaction count or Mainnet status is
+loaded from the design mockup. Reload/disconnect/account/network changes clear
+session history. Send and Buy/Sell have explicit unavailable states and do not
+invoke wallet signing or transfer methods.
+
+`ledger-theme.css` styles the three screens and existing public pages;
+`assets/primebridge-earth.webp` is the optimized, locally hosted hero image.
+No public account records or authentication credentials are introduced.

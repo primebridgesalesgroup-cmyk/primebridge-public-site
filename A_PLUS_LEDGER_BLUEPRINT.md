@@ -5,6 +5,17 @@ for the newest design, not a certificate that the complete application is live.
 It supersedes the October 16 monochrome presentation brief for the next visual
 release. Existing services and customer forms must be preserved during migration.
 
+
+## Visual implementation checkpoint — 20 October 2026
+
+The approved public entry, split account-access screen and portfolio/sidebar
+layout are now implemented in the existing static source. The customer identity
+backend is still unconnected: login/passkey fields are disabled and no private
+account access is claimed. Portfolio observations use actual session wallet reads,
+not mockup figures; market valuation/history and transaction services are pending.
+The baseline inventory below records the earlier reviewed commit and remains a
+historical comparison. Current behavior is documented in WORKSPACE-INTEGRATIONS.md.
+
 ## 1. The customer journey
 
 Public Prime Bridge website -> secure A+ customer sign-in -> personal A+ Ledger.

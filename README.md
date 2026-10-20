@@ -9,13 +9,15 @@ Customer announcements: https://primebridgesalesgroup.org/blockchain.html
 [A_PLUS_LEDGER_BLUEPRINT.md](A_PLUS_LEDGER_BLUEPRINT.md) is the authoritative map
 for the newest owner-approved three-screen design: public website -> secure A+
 customer sign-in -> personal ledger. It records the current source, customer
-navigation, reusable components and remaining service connections. The complete
-approved visual design and authenticated ledger are not yet implemented.
+navigation, reusable components and remaining service connections. The approved entry, sign-in-screen and ledger layout are implemented.
+Customer authentication, private records and transaction services remain unconnected.
 
 ## What is live
 
 - Public service, participation, privacy and milestone pages.
 - Customer-facing Blockchain news and roadmap.
+- Approved globe/charcoal/violet entry, split sign-in screen and portfolio shell.
+- Current-session native-balance chart, time filters and selected-account Receive/copy controls.
 - Public read-only browser-wallet workspace: explicit wallet connection, native
   and manually tracked ERC-20 balances, categories, search/filter and CSV export.
 - Existing protected inquiry and opt-in waitlist frontends. A provider-accepted
@@ -33,7 +35,9 @@ only; the historical marketplace preview contains demonstration data.
 | --- | --- |
 | `index.html` | Public entry and services/participation destinations |
 | `blockchain.html` | Customer announcements, roadmap and Energy Coin updates |
-| `dashboard.html`, `dashboard.js`, `workspace.css` | Current public wallet workspace and connection boundaries |
+| `dashboard.html`, `dashboard.js`, `portfolio.js`, `workspace.css` | Ledger layout, wallet reads, session observations and connection boundaries |
+| `signin.html`, `access.js` | Disabled account-access UI pending identity connection; no credential collection |
+| `ledger-theme.css`, `assets/primebridge-earth.webp` | Approved theme and locally hosted hero asset |
 | `services.html`, `inquiry.js`, `inquiry-delivery.js` | Service inquiry preparation, consent and protected delivery UI |
 | `waitlist.html`, `waitlist.js` | Explicit launch/developer interest; not account registration |
 | `privacy.html`, `waitlist-privacy.html` | Current inquiry and waitlist notices |
