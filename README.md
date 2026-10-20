@@ -1,66 +1,19 @@
-# Prime Bridge / A+ Ledger — public website
+# Prime Bridge public website
 
-Live entry: https://primebridgesalesgroup.org/
-Current wallet workspace: https://primebridgesalesgroup.org/dashboard.html
-Customer announcements: https://primebridgesalesgroup.org/blockchain.html
+The public release contains current business-service information, protected inquiries, launch registration, customer announcements and privacy notices. Customer ledger, sign-in, exchange, Code Bank and payment demonstrations are retained in source and excluded from production.
 
-## Implementation reference
+## Build and publish
 
-[A_PLUS_LEDGER_BLUEPRINT.md](A_PLUS_LEDGER_BLUEPRINT.md) is the authoritative map
-for the newest owner-approved three-screen design: public website -> secure A+
-customer sign-in -> personal ledger. It records the current source, customer
-navigation, reusable components and remaining service connections. The approved entry, sign-in-screen and ledger layout are implemented.
-Customer authentication, private records and transaction services remain unconnected.
+Run `python3 scripts/build-public.py` and deploy only `_public/`. The publish workflow uploads this explicit allowlist. `_config.yml` protects the same boundary for legacy GitHub Pages builds. Do not add `.nojekyll` at the repository root; the builder creates it inside the artifact.
 
-## What is live
+The exact release is verified by `tests/public-release.cjs`, alongside the existing form/browser checks. Public pages never contain the test payment links or fictional marketplace data kept in source. Unknown and retired URLs return the custom 404 page.
 
-- Public service, participation, privacy and milestone pages.
-- Customer-facing Blockchain news and roadmap.
-- Approved globe/charcoal/violet entry, split sign-in screen and portfolio shell.
-- Current-session native-balance chart, time filters and selected-account Receive/copy controls.
-- Public read-only browser-wallet workspace: explicit wallet connection, native
-  and manually tracked ERC-20 balances, categories, search/filter and CSV export.
-- Existing protected inquiry and opt-in waitlist frontends. A provider-accepted
-  request and a confirmed business-inbox receipt remain separate evidence.
+## Readiness and application source
 
-There is no A+ customer authentication service connected to these static pages.
-Private customer records, portfolio pricing/history, transfers, exchange, code
-leases and developer payouts must not be represented as connected. One-World is
-an independent application/account. Stripe sandbox links remain explicitly test
-only; the historical marketplace preview contains demonstration data.
+See [LIVE-READINESS.md](LIVE-READINESS.md) for findings, corrections and the backend work required before customer application release. The approved interface remains documented in [A_PLUS_LEDGER_BLUEPRINT.md](A_PLUS_LEDGER_BLUEPRINT.md). Its implementation remains in `dashboard.html`, `dashboard.js`, `portfolio.js`, `signin.html` and `access.js`; publishing those files is a separate release decision once the complete customer journey works.
 
-## Source map
+Private application code belongs in `primebridgesalesgroup-cmyk/PRIME-BRIDGE-SALES-GROUP-CORP`. No private source, keys, environment files or validator material should be copied into this repository or the public artifact.
 
-| Files | Responsibility |
-| --- | --- |
-| `index.html` | Public entry and services/participation destinations |
-| `blockchain.html` | Customer announcements, roadmap and Energy Coin updates |
-| `dashboard.html`, `dashboard.js`, `portfolio.js`, `workspace.css` | Ledger layout, wallet reads, session observations and connection boundaries |
-| `signin.html`, `access.js` | Disabled account-access UI pending identity connection; no credential collection |
-| `ledger-theme.css`, `assets/primebridge-earth.webp` | Approved theme and locally hosted hero asset |
-| `services.html`, `inquiry.js`, `inquiry-delivery.js` | Service inquiry preparation, consent and protected delivery UI |
-| `waitlist.html`, `waitlist.js` | Explicit launch/developer interest; not account registration |
-| `privacy.html`, `waitlist-privacy.html` | Current inquiry and waitlist notices |
-| `milestones.html` | Dated release archive |
-| `styles.css`, `site.js` | Shared public styling, navigation and accessibility behavior |
-| `preview/`, `sandbox.html` | Separate historical demonstration and Stripe test checkout |
-| `.github/workflows/` | Navigation/browser checks and allowlisted Pages publication |
-| `WORKSPACE-INTEGRATIONS.md` | Current wallet behavior and detailed integration boundaries |
+## Contact workflows
 
-Private application services remain in the existing private Prime Bridge
-repository. Never copy private source, account records, keys, databases or
-validator credentials into the Pages bundle. Do not duplicate the application
-or change frameworks simply to match a suggested screenshot tech stack.
-
-## Validation and publication
-
-- Navigation/anchor/assets and JavaScript syntax checks run in CI.
-- Browser checks cover public pages, forms, responsive layouts, explicit wallet
-  consent, exact balance reads, account/network changes and stale-data clearing.
-- Pages deploys only the assets explicitly staged by `publish-public-site.yml`.
-- Backend/authentication/transaction services require their own deployment and
-  owner-scoped integration evidence; static publication does not enable them.
-
-For local source inspection, serve static files from this repository. Preserve
-existing form field names, CAPTCHA/consent handling and privacy destinations.
-See [REDESIGN-NOTES.md](REDESIGN-NOTES.md) only for the historical October 16 brief.
+The service inquiry and launch-registration forms use Web3Forms and opt-in hCaptcha. Form identifiers in browser source are public identifiers. Mailbox credentials never belong in client code. Inbox operation procedures and privacy notices remain in their existing documents.
