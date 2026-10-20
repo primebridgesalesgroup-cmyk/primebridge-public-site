@@ -1,5 +1,8 @@
 # A+ customer workspace
 
+The approved next design and source map are in [A_PLUS_LEDGER_BLUEPRINT.md](A_PLUS_LEDGER_BLUEPRINT.md).
+This document describes the current implementation, not the completed private ledger.
+
 The public homepage and `dashboard.html` use the existing monochrome A+ identity.
 The dashboard provides Assets, Wallets, Ledger, Blockchain, Exchange, Code/API
 Licenses, Security and Account sections. It uses real browser-wallet reads and
@@ -28,7 +31,8 @@ has no sample holdings, manufactured transactions or simulated checkout.
 | Account | A+ identity on a suitable HTTPS application host; authenticated owner-scoped sessions, CSRF, recovery and sign-out. No credentials collected by static Pages. |
 | Asset register | Authenticated inventory/evidence/rights listing, tenant ownership enforcement and versioned category schema. Wallet possession is not asset title. |
 | Ledger | Owner-scoped transaction listing, immutable IDs, pagination and reconciliation of payment, fee, chain and fulfillment events. |
-| Blockchain | Existing production RPC, exact chain ID/genesis, verified contracts, indexer/explorer and finality policy. Observed wallet network is not claimed as A+ production. |
+| Blockchain updates | Customer-facing news/roadmap at `blockchain.html`; no code explanation or network diagnostics. |
+| Security / wallet network details | Observed wallet-provider network reads. Production RPC, chain ID/genesis, verified contracts, indexer/explorer and finality remain separate backend work. |
 | Exchange | Authorized real catalog, inventory reservation, order state, capture/refund and settlement; no front-end-only paid status. |
 | Code/API licenses | Deploy private PR184's code-bank API/contract, confirm immutable treasury/fee configuration and connect authenticated lease/expiry/download services. |
 | Billing | Deploy PR183 and separately implement production-approved billing; Stripe test fixtures are not production prices. Signed webhook reconciliation is required. |

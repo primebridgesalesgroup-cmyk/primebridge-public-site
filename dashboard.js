@@ -5,7 +5,7 @@
     assets: ["Your assets", "Track connected wallet holdings and find your asset categories."],
     wallets: ["Your wallets", "Choose a browser wallet and read its selected account and network."],
     ledger: ["Your ledger", "Customer transactions, fees and confirmations belong in one record."],
-    blockchain: ["Blockchain", "Read your wallet network and see the A+ connection status."],
+    blockchain: ["Blockchain updates", "Customer announcements, upcoming services and the A+ roadmap."],
     exchange: ["Exchange", "A single place for listings, orders and settlement connections."],
     licenses: ["Code & API licenses", "Keep release versions, lease periods and access records together."],
     security: ["Security & privacy", "Understand your connections and how this workspace handles data."],

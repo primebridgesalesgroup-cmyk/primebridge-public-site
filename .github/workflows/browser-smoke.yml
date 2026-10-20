@@ -60,14 +60,14 @@ jobs:
               await page.goto('http://127.0.0.1:8765/',{waitUntil:'networkidle'});
               if(viewport.width<500)await page.locator('.menu-toggle').click();
               for(const anchor of ['platform','partners']){
-                await page.locator('#site-nav a[href="#'+anchor+'"]').click();
-                if(!await page.locator('#'+anchor).count())throw Error('Missing section '+anchor);
-                if(viewport.width<500 && anchor!=='partners')await page.locator('.menu-toggle').click();
+                if(!await page.locator('#'+anchor).count())throw Error('Missing retained section '+anchor);
               }
-              await page.goto('http://127.0.0.1:8765/blockchain.html');
-              if(viewport.width<500)await page.locator('.menu-toggle').click();
-              await page.locator('#site-nav a[href="./#platform"]').click();
-              if(!page.url().includes('#platform'))throw Error('Blockchain return link broken');
+              await page.locator('#site-nav a[href="blockchain.html"]').click();
+              if(!page.url().endsWith('/blockchain.html'))throw Error('Customer updates navigation broken');
+              if(!await page.locator('#roadmap').count())throw Error('Customer roadmap missing');
+              await page.locator('.header .brand').click();
+              if(new URL(page.url()).pathname!=='/')throw Error('Return to website entry broken');
+              if(!await page.locator('#site-nav a[href="dashboard.html#account"]').count())throw Error('Customer access destination missing');
               await page.goto('http://127.0.0.1:8765/preview/index.html');
               for(const route of ['dashboard','inventory','trading','checkout','fulfillment','analytics','blockchain']){
                 await page.locator('[data-view="'+route+'"]').click();

@@ -27,6 +27,9 @@ const server=http.createServer((req,res)=>{
         assert.equal(await page.locator('[data-section][aria-current=page]').getAttribute('data-section'),route);
         assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true,`${route} at ${width}px`);
       }
+      assert.equal(await page.locator('#blockchain #chain-id').count(),0,'Blockchain is customer news');
+      assert.equal(await page.locator('#security #chain-id').count(),1,'Wallet network details belong in Security');
+      assert.equal(await page.locator('#blockchain a[href="blockchain.html"]').count(),1);
       assert.equal(await page.locator('input[type=password]').count(),0);
       assert.match(await page.locator('#account a.button').getAttribute('href'),/one-world-preview-production\.up\.railway\.app\/\?view=home&open=account/);
       await page.goto(base+'/dashboard.html#invalid');
