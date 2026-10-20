@@ -1,30 +1,62 @@
-# A+ Global Asset Network — public launch frontend
+# Prime Bridge / A+ Ledger — public website
 
-Public presentation site for Prime Bridge Sales Group Corp's A+ ecosystem and blockchain infrastructure.
+Live entry: https://primebridgesalesgroup.org/
+Current wallet workspace: https://primebridgesalesgroup.org/dashboard.html
+Customer announcements: https://primebridgesalesgroup.org/blockchain.html
 
-## Scope
+## Implementation reference
 
-- Responsive ecosystem landing page with accessible navigation
-- Participant verification, approved inventory, trade lifecycle, fulfillment, risk controls, and blockchain evidence architecture
-- Clear separation between development features and production availability
-- No payment collection, wallet connection, login form, or unverified transaction-confirmation claims
+[A_PLUS_LEDGER_BLUEPRINT.md](A_PLUS_LEDGER_BLUEPRINT.md) is the authoritative map
+for the newest owner-approved three-screen design: public website -> secure A+
+customer sign-in -> personal ledger. It records the current source, customer
+navigation, reusable components and remaining service connections. The complete
+approved visual design and authenticated ledger are not yet implemented.
 
-## Files
+## What is live
 
-- `index.html`: semantic public homepage and platform sections
-- `styles.css`: responsive design and reduced-motion support
-- `site.js`: mobile navigation and copyright year
+- Public service, participation, privacy and milestone pages.
+- Customer-facing Blockchain news and roadmap.
+- Public read-only browser-wallet workspace: explicit wallet connection, native
+  and manually tracked ERC-20 balances, categories, search/filter and CSV export.
+- Existing protected inquiry and opt-in waitlist frontends. A provider-accepted
+  request and a confirmed business-inbox receipt remain separate evidence.
 
-## Preview
+There is no A+ customer authentication service connected to these static pages.
+Private customer records, portfolio pricing/history, transfers, exchange, code
+leases and developer payouts must not be represented as connected. One-World is
+an independent application/account. Stripe sandbox links remain explicitly test
+only; the historical marketplace preview contains demonstration data.
 
-Serve the repository as static files, for example `python -m http.server 8000`, and open `http://localhost:8000`.
+## Source map
 
-## Launch checklist
+| Files | Responsibility |
+| --- | --- |
+| `index.html` | Public entry and services/participation destinations |
+| `blockchain.html` | Customer announcements, roadmap and Energy Coin updates |
+| `dashboard.html`, `dashboard.js`, `workspace.css` | Current public wallet workspace and connection boundaries |
+| `services.html`, `inquiry.js`, `inquiry-delivery.js` | Service inquiry preparation, consent and protected delivery UI |
+| `waitlist.html`, `waitlist.js` | Explicit launch/developer interest; not account registration |
+| `privacy.html`, `waitlist-privacy.html` | Current inquiry and waitlist notices |
+| `milestones.html` | Dated release archive |
+| `styles.css`, `site.js` | Shared public styling, navigation and accessibility behavior |
+| `preview/`, `sandbox.html` | Separate historical demonstration and Stripe test checkout |
+| `.github/workflows/` | Navigation/browser checks and allowlisted Pages publication |
+| `WORKSPACE-INTEGRATIONS.md` | Current wallet behavior and detailed integration boundaries |
 
-1. Verify GitHub Pages or the selected hosting provider's deployment settings.
-2. Configure `primebridgesalesgroup.org` DNS and HTTPS after host verification.
-3. Test desktop/mobile rendering, links, keyboard navigation, and performance.
-4. Keep authenticated trade services and blockchain confirmation behind a separate, audited backend gateway.
-5. Add backend integration only after API authentication, CORS allowlists, session security, operational monitoring, and production checks are verified.
+Private application services remain in the existing private Prime Bridge
+repository. Never copy private source, account records, keys, databases or
+validator credentials into the Pages bundle. Do not duplicate the application
+or change frameworks simply to match a suggested screenshot tech stack.
 
-The public website is informational. It does not establish that any trade, payment, title transfer, or blockchain confirmation is live.
+## Validation and publication
+
+- Navigation/anchor/assets and JavaScript syntax checks run in CI.
+- Browser checks cover public pages, forms, responsive layouts, explicit wallet
+  consent, exact balance reads, account/network changes and stale-data clearing.
+- Pages deploys only the assets explicitly staged by `publish-public-site.yml`.
+- Backend/authentication/transaction services require their own deployment and
+  owner-scoped integration evidence; static publication does not enable them.
+
+For local source inspection, serve static files from this repository. Preserve
+existing form field names, CAPTCHA/consent handling and privacy destinations.
+See [REDESIGN-NOTES.md](REDESIGN-NOTES.md) only for the historical October 16 brief.

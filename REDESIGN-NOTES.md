@@ -1,4 +1,8 @@
-# Monochrome ecosystem redesign
+# Monochrome ecosystem redesign — historical brief
+
+Historical October 16 record. For the newest approved design, use
+[A_PLUS_LEDGER_BLUEPRINT.md](A_PLUS_LEDGER_BLUEPRINT.md). The statements below
+describe that earlier release and are not the current deployment status.
 
 Source brief: owner-provided Corrected Company Vision & Development Directive,
 October 16, 2026. A+ remains an emerging blockchain-supported global asset economy.
@@ -30,3 +34,4 @@ full screen-reader or security certification.
 
 The earlier unpublished correction branch is incorporated in this design. This
 branch is prepared for review; no merge or deployment is performed by this record.
+
