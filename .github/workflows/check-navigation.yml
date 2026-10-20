@@ -7,6 +7,9 @@ on:
       - '*.html'
       - 'site.js'
       - 'dashboard.js'
+      - 'portfolio.js'
+      - 'access.js'
+      - 'ledger-theme.css'
       - 'workspace.css'
       - 'preview/**'
       - '.github/workflows/check-navigation.yml'
@@ -76,5 +79,7 @@ jobs:
           node --check inquiry.js
           node --check site.js
           node --check dashboard.js
+          node --check portfolio.js
+          node --check access.js
           node --check preview/main.js
 

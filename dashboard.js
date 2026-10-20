@@ -1,9 +1,15 @@
 "use strict";
 (() => {
   const $ = id => document.getElementById(id);
+  const portfolio = window.createAPlusPortfolio();
   const sections = {
+    portfolio: ["Portfolio", "Your assets, accounts and activity in one place."],
+    send: ["Send", "Review supported transfers and wallet permissions."],
+    receive: ["Receive", "Your selected wallet account and network."],
+    "buy-sell": ["Buy / Sell", "Supported purchase and sale services."],
+    settings: ["Settings", "Account preferences and wallet network information."],
     assets: ["Your assets", "Track connected wallet holdings and find your asset categories."],
-    wallets: ["Your wallets", "Choose a browser wallet and read its selected account and network."],
+    wallets: ["Accounts", "Choose a browser wallet and read its selected account and network."],
     ledger: ["Your ledger", "Customer transactions, fees and confirmations belong in one record."],
     blockchain: ["Blockchain updates", "Customer announcements, upcoming services and the A+ roadmap."],
     exchange: ["Exchange", "A single place for listings, orders and settlement connections."],
@@ -35,7 +41,7 @@
     return whole + (fraction ? "." + fraction : "");
   }
   function showSection() {
-    const requested = location.hash.slice(1), route = Object.hasOwn(sections, requested) ? requested : "assets";
+    const requested = location.hash.slice(1), route = Object.hasOwn(sections, requested) ? requested : "portfolio";
     if (route !== requested) history.replaceState(null, "", "#" + route);
     document.querySelectorAll(".workspace-section").forEach(section => { section.hidden = section.id !== route; });
     document.querySelectorAll("[data-section]").forEach(link => {
@@ -44,11 +50,12 @@
     });
     $("workspace-title").textContent = sections[route][0];
     $("workspace-description").textContent = sections[route][1];
+    $("workspace-summary").hidden = route === "portfolio";
     document.title = sections[route][0] + " | A+ customer workspace";
   }
   function holdings() {
     if (!state.account || state.native === null) return [];
-    return [{name: "Native balance", detail: symbol(state.chain), category: "native", categoryName: "Native currency", chain: name(state.chain), quantity: quantity(state.native, chains[state.chain] ? 18 : 0), source: "Wallet provider"}, ...state.tokens.map(token => ({name: token.symbol, detail: token.address, category: "token", categoryName: "Tokens", chain: name(state.chain), quantity: quantity(token.balance, token.decimals), source: "Contract read"}))];
+    return [{name: chains[state.chain] ? name(state.chain) : "Native balance", detail: symbol(state.chain), category: "native", categoryName: "Native currency", chain: name(state.chain), quantity: quantity(state.native, chains[state.chain] ? 18 : 0), source: "Wallet provider"}, ...state.tokens.map(token => ({name: token.symbol, detail: token.address, category: "token", categoryName: "Tokens", chain: name(state.chain), quantity: quantity(token.balance, token.decimals), source: "Contract read"}))];
   }
   function filteredHoldings() {
     const search = $("asset-search").value.trim().toLowerCase(), category = $("asset-category").value;
@@ -67,8 +74,8 @@
     }
     for (const row of rows) {
       const tr = document.createElement("tr"), asset = document.createElement("td"), title = document.createElement("strong"), detail = document.createElement("small");
-      asset.className = "asset-name"; title.textContent = row.name; detail.textContent = row.detail; asset.append(title, detail); tr.append(asset);
-      for (const value of [row.categoryName, row.chain, row.quantity, row.source]) { const cell = document.createElement("td"); cell.textContent = value; tr.append(cell); }
+      asset.className = "asset-name"; title.textContent = row.name; detail.textContent = row.detail + " · " + row.chain; asset.append(title, detail); tr.append(asset);
+      for (const value of [row.categoryName, row.quantity, "—", row.category === "native" ? "Wallet read" : "Contract read · unverified"]) { const cell = document.createElement("td"); cell.textContent = value; tr.append(cell); }
       body.append(tr);
     }
   }
@@ -96,11 +103,16 @@
     $("refresh-wallet").disabled = !connected || state.busy;
     $("disconnect-wallet").disabled = !connected && !pendingConnection;
     $("add-token").disabled = !readable || state.busy || tokenPending;
+    $("receive-address").textContent = readable ? state.account : "Connect a wallet first";
+    $("receive-network").textContent = readable ? name(state.chain) + " · " + state.chain : "Not read";
+    $("copy-receive-address").disabled = !readable;
+    $("ledger-network-status").textContent = state.block ? "Wallet network · " + name(state.chain) + " · Block " + state.block : "Network not read";
+    portfolio.render({account: connected ? short(state.account) : "", network: state.chain ? name(state.chain) : "", readable, balance: readable ? quantity(state.native, chains[state.chain] ? 18 : 0) + " " + symbol(state.chain) : "", rows: holdings()});
     renderAssets();
   }
   function clearReads() { state.chain = ""; state.native = null; state.block = ""; state.updated = ""; state.tokens = []; }
   function disconnected(message = "Disconnected from this page. Wallet permissions can be revoked in your wallet settings.") {
-    state.revision++; detach(); detach = () => {}; state.provider = null; state.account = ""; state.busy = false; pendingConnection = false; tokenPending = false; clearReads(); $("token-contract").value = ""; render(); tell(message);
+    portfolio.reset(); state.revision++; detach(); detach = () => {}; state.provider = null; state.account = ""; state.busy = false; pendingConnection = false; tokenPending = false; clearReads(); $("token-contract").value = ""; render(); tell(message);
   }
   async function rpc(provider, method, params = []) {
     let timer;
@@ -125,6 +137,7 @@
       if (revision !== state.revision) return;
       if (chain !== finalChain || state.account !== account) throw new Error("wallet_changed");
       state.chain = chain; state.native = uint(balanceRaw); state.block = uint(blockRaw).toString(); state.tokens = tokens; state.updated = new Date().toLocaleTimeString();
+      portfolio.observe({account, chain, balance: state.native});
       tell("Wallet data refreshed. Balances are reported by your provider; private customer records are not connected.");
     } catch {
       if (revision === state.revision) { clearReads(); tell("Wallet data could not be read. Check the selected network and wallet connection, then refresh. Stale balances have been cleared."); }
@@ -134,9 +147,9 @@
     const accountsChanged = accounts => {
       if (state.provider !== provider) return;
       if (!Array.isArray(accounts) || !addressPattern.test(accounts[0] || "")) { disconnected("Your wallet no longer exposes an account. Page data was cleared."); return; }
-      state.tokens = []; state.account = accounts[0]; void readAll();
+      portfolio.reset(); state.tokens = []; state.account = accounts[0]; void readAll();
     };
-    const chainChanged = () => { if (state.provider === provider) { state.tokens = []; void readAll(); } };
+    const chainChanged = () => { if (state.provider === provider) { portfolio.reset(); state.tokens = []; void readAll(); } };
     const disconnect = () => { if (state.provider === provider) disconnected("Wallet connection ended. Page data was cleared."); };
     if (typeof provider.on === "function") { provider.on("accountsChanged", accountsChanged); provider.on("chainChanged", chainChanged); provider.on("disconnect", disconnect); }
     detach = () => { if (typeof provider.removeListener === "function") { provider.removeListener("accountsChanged", accountsChanged); provider.removeListener("chainChanged", chainChanged); provider.removeListener("disconnect", disconnect); } };
@@ -212,6 +225,13 @@
     link.href = url; link.download = "aplus-wallet-holdings.csv"; document.body.append(link); link.click(); link.remove(); setTimeout(() => URL.revokeObjectURL(url), 1000);
     tell("Displayed holdings exported to your device. This export is not a complete asset inventory or ownership certificate.");
   }
+  $("copy-receive-address").addEventListener("click", async () => {
+    if (!state.account || state.native === null) return;
+    const address = state.account, revision = state.revision;
+    try { await navigator.clipboard.writeText(address); if (revision === state.revision) tell("Selected account address copied. Confirm the network in your wallet before receiving assets."); }
+    catch { if (revision === state.revision) tell("Clipboard access is unavailable. You can select and copy the displayed account address."); }
+  });
+  $("open-notifications").addEventListener("click", () => $("notifications-dialog").showModal());
   window.addEventListener("hashchange", showSection);
   $("header-connect").addEventListener("click", () => state.account ? void readAll() : void connect());
   $("connect-wallet").addEventListener("click", () => void connect());

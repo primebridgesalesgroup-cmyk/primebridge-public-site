@@ -24,12 +24,12 @@ const server = http.createServer((req,res) => {
       const errors=[],external=[];
       page.on('pageerror',err=>errors.push(err.message));
       page.on('request',req=>{if(!req.url().startsWith(base))external.push(req.url());});
-      for(const file of ['index.html','sandbox.html','services.html','milestones.html','blockchain.html','privacy.html','waitlist.html','waitlist-privacy.html','preview/index.html']){
+      for(const file of ['index.html','sandbox.html','services.html','milestones.html','blockchain.html','privacy.html','waitlist.html','waitlist-privacy.html','signin.html','preview/index.html']){
         await page.goto(base+'/'+file);
         assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true,`${width}px overflow: ${file}`);
         assert.equal(await page.locator('h1').count(),1,file);
         if(file!=='preview/index.html'){
-          assert.deepEqual(await page.locator('#site-nav a').evaluateAll(links=>links.map(link=>link.getAttribute('href'))),['dashboard.html','blockchain.html','dashboard.html#exchange','dashboard.html#licenses','services.html','dashboard.html#account'],file+' shared customer navigation');
+          assert.deepEqual(await page.locator('#site-nav a').evaluateAll(links=>links.map(link=>link.getAttribute('href'))),['dashboard.html','blockchain.html','dashboard.html#exchange','dashboard.html#licenses','services.html','signin.html'],file+' shared customer navigation');
           const collapsed=await page.locator('.menu-toggle').isVisible();
           if(collapsed){
             await page.locator('.menu-toggle').click();
@@ -47,6 +47,11 @@ const server = http.createServer((req,res) => {
             const a=luminance(pair.color),b=luminance(pair.bg);
             assert.ok((Math.max(a,b)+.05)/(Math.min(a,b)+.05)>=4.5,JSON.stringify(pair));
           }
+        }
+        if(file==='signin.html'){
+          assert.equal(await page.locator('#access-form fieldset').evaluate(fieldset=>fieldset.disabled),true);
+          assert.equal(await page.locator('#access-email').isDisabled(),true);
+          assert.match(await page.locator('.access-availability').innerText(),/No credentials are collected/);
         }
         if(file==='sandbox.html'){
           assert.equal(await page.locator('a[href="https://buy.stripe.com/test_00w8wP6v66Vyesy8q35os00"]').count(),1);
@@ -83,7 +88,7 @@ const server = http.createServer((req,res) => {
       assert.deepEqual(external,[],'No third-party script should load before a customer requests CAPTCHA');
       await page.close();
     }
-    console.log('Public site passed: nine pages at 1440/1024/768/390/320px, menus/Escape, button contrast, no overflow, sandbox checkout links, form readiness, retired-sector removal, no automatic third-party requests');
+    console.log('Public site passed: ten pages at 1440/1024/768/390/320px, menus/Escape, button contrast, no overflow, sandbox checkout links, form readiness, retired-sector removal, no automatic third-party requests');
   }finally{await browser.close();}
 })().catch(err=>{console.error(err);process.exitCode=1;}).finally(()=>server.close());
 

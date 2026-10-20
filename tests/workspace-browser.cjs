@@ -20,7 +20,7 @@ const server=http.createServer((req,res)=>{
       page.on('pageerror',e=>errors.push(e.message));
       page.on('request',req=>{if(!req.url().startsWith(base))external.push(req.url());});
       await page.goto(base+'/dashboard.html');
-      for(const route of ['assets','wallets','ledger','blockchain','exchange','licenses','security','account']){
+      for(const route of ['portfolio','wallets','assets','send','receive','buy-sell','exchange','licenses','ledger','blockchain','security','settings','account']){
         await page.locator(`[data-section="${route}"]`).click();
         await page.waitForFunction(route=>document.getElementById(route).hidden===false,route);
         assert.equal(await page.locator('.workspace-section:visible').count(),1);
@@ -28,12 +28,12 @@ const server=http.createServer((req,res)=>{
         assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true,`${route} at ${width}px`);
       }
       assert.equal(await page.locator('#blockchain #chain-id').count(),0,'Blockchain is customer news');
-      assert.equal(await page.locator('#security #chain-id').count(),1,'Wallet network details belong in Security');
+      assert.equal(await page.locator('#settings #chain-id').count(),1,'Wallet network details belong in Settings');
       assert.equal(await page.locator('#blockchain a[href="blockchain.html"]').count(),1);
       assert.equal(await page.locator('input[type=password]').count(),0);
-      assert.match(await page.locator('#account a.button').getAttribute('href'),/one-world-preview-production\.up\.railway\.app\/\?view=home&open=account/);
+      assert.equal(await page.locator('#account a.button').getAttribute('href'),'signin.html');
       await page.goto(base+'/dashboard.html#invalid');
-      await page.waitForURL('**/dashboard.html#assets');
+      await page.waitForURL('**/dashboard.html#portfolio');
       await page.locator('#header-connect').click();
       await page.waitForURL('**#wallets');
       assert.match(await page.locator('#workspace-message').innerText(),/No compatible browser wallet/);
@@ -42,6 +42,8 @@ const server=http.createServer((req,res)=>{
         fs.mkdirSync(path.join(root,'screenshots'),{recursive:true});
         await page.goto(base+'/dashboard.html');
         await page.screenshot({path:path.join(root,'screenshots',`workspace-dashboard-${width}.png`),fullPage:true});
+        await page.goto(base+'/signin.html');
+        await page.screenshot({path:path.join(root,'screenshots',`workspace-signin-${width}.png`),fullPage:true});
         await page.goto(base+'/');
         await page.screenshot({path:path.join(root,'screenshots',`workspace-home-${width}.png`),fullPage:true});
       }
@@ -73,6 +75,22 @@ const server=http.createServer((req,res)=>{
     assert.match(await page.locator('#asset-rows').innerText(),/Native currency/);
     assert.match(await page.locator('#wallet-balance').innerText(),/^1 ETH$/);
     assert.equal(await page.locator('#chain-block').innerText(),'42');
+    assert.equal(await page.locator('.portfolio-value').innerText(),'—','No invented fiat portfolio value');
+    assert.equal(await page.locator('#portfolio-chart polyline').count(),0,'One read cannot fabricate history');
+    await page.locator('#header-connect').click();
+    await page.waitForFunction(()=>document.querySelector('#portfolio-chart polyline')!==null);
+    assert.match(await page.locator('#portfolio-chart').getAttribute('aria-label'),/2 successful native-balance observations/);
+    await page.locator('[data-range=week]').click();
+    assert.equal(await page.locator('[data-range=week]').getAttribute('aria-pressed'),'true');
+    await page.locator('#open-notifications').click();
+    assert.equal(await page.locator('#notifications-dialog').isVisible(),true);
+    await page.keyboard.press('Escape');
+    assert.equal(await page.locator('#notifications-dialog').isVisible(),false);
+    await page.locator('[data-section=receive]').click();
+    assert.equal(await page.locator('#receive-address').innerText(),'0x1111111111111111111111111111111111111111');
+    await page.evaluate(()=>Object.defineProperty(navigator,'clipboard',{configurable:true,value:{writeText:async value=>{window.copiedAddress=value;}}}));
+    await page.locator('#copy-receive-address').click();
+    await page.waitForFunction(()=>window.copiedAddress==='0x1111111111111111111111111111111111111111');
     await page.locator('[data-section=wallets]').click();
     await page.locator('#token-contract').fill('0x2222222222222222222222222222222222222222');
     await page.locator('#add-token').click();
@@ -101,6 +119,8 @@ const server=http.createServer((req,res)=>{
     assert.doesNotMatch(await page.locator('body').innerText(),/private provider diagnostic/);
     await page.locator('[data-section=wallets]').click();await page.locator('#disconnect-wallet').click();
     assert.equal(await page.locator('#summary-wallet').innerText(),'Not connected');
+    assert.equal(await page.locator('#portfolio-chart polyline').count(),0,'Disconnect clears chart history');
+    assert.equal(await page.locator('#copy-receive-address').isDisabled(),true);
     assert.equal(await page.evaluate(()=>localStorage.length),0);
     assert.equal(await page.evaluate(()=>sessionStorage.length),0);
     const methods=await page.evaluate(()=>window.walletCalls.map(x=>x.method));
