@@ -17,3 +17,5 @@ html:has(.ledger-app){scroll-behavior:auto}.ledger-app .workspace-header{positio
 @media(max-width:640px){
  .ledger-app .workspace-header{flex-wrap:wrap;justify-content:start;gap:10px}.ledger-app .workspace-header .brand-name{font-size:7px}.ledger-app .workspace-header-actions{gap:12px}.ledger-app .connection-status{font-size:9px;gap:5px}.ledger-app .workspace-header-actions .header-icon{display:none}.ledger-app .profile-avatar{width:27px;height:27px}.ledger-app .workspace-header .brand-symbol{font-size:31px}.ledger-app .workspace-heading h1{font-size:26px}.ledger-security-banner{margin-bottom:16px}.portfolio-head{align-items:start;flex-direction:column;gap:14px}.portfolio-actions{width:100%}.portfolio-chart-frame,.portfolio-chart-frame svg{height:190px;min-height:190px}.portfolio-chart-heading p{max-width:none}.portfolio-chart-empty small{max-width:250px}.ledger-app .workspace-summary>div{padding:13px 17px}
 }
+
+.ledger-app .portfolio-filters{padding:12px 20px;gap:14px}.ledger-app .portfolio-filters label{font-size:10px}.ledger-app .portfolio-filters input,.ledger-app .portfolio-filters select{min-height:34px;margin-top:4px;padding:6px 10px;font-size:11px}

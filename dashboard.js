@@ -77,8 +77,8 @@
     if (!state.account || state.native === null) return [];
     return [{name: chains[state.chain] ? name(state.chain) : "Native balance", detail: symbol(state.chain), category: "native", categoryName: "Native currency", chain: name(state.chain), quantity: quantity(state.native, chains[state.chain] ? 18 : 0), source: "Wallet provider"}, ...state.tokens.map(token => ({name: token.symbol, detail: token.address, category: "token", categoryName: "Tokens", chain: name(state.chain), quantity: quantity(token.balance, token.decimals), source: "Contract read"}))];
   }
-  function filteredHoldings() {
-    const search = $("asset-search").value.trim().toLowerCase(), category = $("asset-category").value;
+  function filteredHoldings(prefix = "") {
+    const search = $(prefix + "asset-search").value.trim().toLowerCase(), category = $(prefix + "asset-category").value;
     return holdings().filter(row => (category === "all" || category === row.category) && [row.name, row.detail, row.categoryName].join(" ").toLowerCase().includes(search));
   }
   function renderAssets() {
@@ -126,7 +126,7 @@
     $("receive-network").textContent = readable ? name(state.chain) + " · " + state.chain : "Not read";
     $("copy-receive-address").disabled = !readable;
     $("ledger-network-status").textContent = state.block ? "Wallet network · " + name(state.chain) + " · Block " + state.block : "Network not read";
-    portfolio.render({account: connected ? short(state.account) : "", network: state.chain ? name(state.chain) : "", readable, balance: readable ? quantity(state.native, chains[state.chain] ? 18 : 0) + " " + symbol(state.chain) : "", rows: holdings()});
+    portfolio.render({account: connected ? short(state.account) : "", network: state.chain ? name(state.chain) : "", readable, balance: readable ? quantity(state.native, chains[state.chain] ? 18 : 0) + " " + symbol(state.chain) : "", rows: filteredHoldings("portfolio-"), hasHoldings: holdings().length > 0});
     renderAssets();
   }
   function clearReads() { state.chain = ""; state.native = null; state.block = ""; state.updated = ""; state.tokens = []; }
@@ -276,6 +276,7 @@
   $("connect-wallet").addEventListener("click", () => void connect());
   $("refresh-wallet").addEventListener("click", () => void readAll());
   $("disconnect-wallet").addEventListener("click", () => disconnected());
+  $("portfolio-asset-search").addEventListener("input", render); $("portfolio-asset-category").addEventListener("change", render);
   $("asset-search").addEventListener("input", renderAssets); $("asset-category").addEventListener("change", renderAssets);
   $("token-form").addEventListener("submit", event => void addToken(event)); $("export-assets").addEventListener("click", exportAssets);
   window.addEventListener("eip6963:announceProvider", event => {

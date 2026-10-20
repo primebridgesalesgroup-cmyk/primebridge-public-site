@@ -112,6 +112,10 @@ const server=http.createServer((req,res)=>{
     assert.equal(await page.locator('#portfolio-chart polyline').count(),0,'Native wallet snapshots are not portfolio performance');
     await page.locator('[data-section=portfolio]').click();
     assert.equal(await page.locator('[data-range=week]').isDisabled(),true,'Timeframes unavailable without historical valuation');
+    await page.locator('#portfolio-asset-search').fill('not present');
+    assert.match(await page.locator('#portfolio-asset-rows').innerText(),/No displayed holdings/);
+    await page.locator('#portfolio-asset-search').fill('');
+    assert.match(await page.locator('#portfolio-asset-rows').innerText(),/Native currency/);
     await page.locator('#open-notifications').click();
     assert.equal(await page.locator('#notifications-dialog').isVisible(),true);
     await page.keyboard.press('Escape');

@@ -13,7 +13,7 @@ window.createAPlusPortfolio = () => {
   const body = $("portfolio-asset-rows"); body.replaceChildren();
   if (!view.rows.length) {
    const tr = document.createElement("tr"), td = document.createElement("td");
-   td.colSpan = 5; td.className = "empty-cell"; td.textContent = "No holdings loaded. Manage wallet balance reads in Accounts.";
+   td.colSpan = 5; td.className = "empty-cell"; td.textContent = view.hasHoldings ? "No displayed holdings match this filter." : "No holdings loaded. Manage wallet balance reads in Accounts.";
    tr.append(td); body.append(tr); return;
   }
   for (const row of view.rows) {
