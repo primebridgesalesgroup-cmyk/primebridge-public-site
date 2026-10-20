@@ -24,12 +24,12 @@ const server = http.createServer((req,res) => {
       const errors=[],external=[];
       page.on('pageerror',err=>errors.push(err.message));
       page.on('request',req=>{if(!req.url().startsWith(base))external.push(req.url());});
-      for(const file of ['index.html','services.html','milestones.html','blockchain.html','privacy.html','waitlist.html','preview/index.html']){
+      for(const file of ['index.html','sandbox.html','services.html','milestones.html','blockchain.html','privacy.html','waitlist.html','preview/index.html']){
         await page.goto(base+'/'+file);
         assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true,`${width}px overflow: ${file}`);
         assert.equal(await page.locator('h1').count(),1,file);
         if(file!=='preview/index.html'){
-          const expectedLinks = file==='index.html' ? 9 : file==='waitlist.html' ? 6 : 8;
+          const expectedLinks = ['index.html','sandbox.html'].includes(file) ? 9 : file==='waitlist.html' ? 6 : 8;
           assert.equal(await page.locator('#site-nav a').count(),expectedLinks,file);
           const collapsed=await page.locator('.menu-toggle').isVisible();
           if(collapsed){
@@ -49,6 +49,12 @@ const server = http.createServer((req,res) => {
             assert.ok((Math.max(a,b)+.05)/(Math.min(a,b)+.05)>=4.5,JSON.stringify(pair));
           }
         }
+        if(file==='sandbox.html'){
+          assert.equal(await page.locator('a[href="https://buy.stripe.com/test_00w8wP6v66Vyesy8q35os00"]').count(),1);
+          assert.equal(await page.locator('a[href="https://buy.stripe.com/test_9B6eVd3iU2FigAGfSv5os01"]').count(),1);
+          assert.equal(await page.locator('meta[name="robots"]').getAttribute('content'),'noindex,follow');
+          assert.match(await page.locator('main').innerText(),/No real money moves/);
+        }
         if(file==='services.html'){
           assert.equal(await page.locator('#delivery-fields').getAttribute('disabled'),null);
           assert.equal(await page.locator('option[value=property]').count(),0);
@@ -62,7 +68,7 @@ const server = http.createServer((req,res) => {
           assert.match(await page.locator('#waitlist-status').innerText(),/No registration has been sent/);
         }
         if(file==='milestones.html')assert.doesNotMatch(await page.locator('main').innerText(),/private pull request|535 Python|checks were still failing/);
-        if(process.env.TEST_SCREENSHOT_DIR&&[1440,390].includes(width)&&['index.html','services.html'].includes(file)){
+        if(process.env.TEST_SCREENSHOT_DIR&&[1440,390].includes(width)&&['index.html','sandbox.html','services.html'].includes(file)){
           fs.mkdirSync(process.env.TEST_SCREENSHOT_DIR,{recursive:true});
           await page.screenshot({path:path.join(process.env.TEST_SCREENSHOT_DIR,`${file.replace('.html','')}-${width}.png`),fullPage:true});
           if(file==='index.html'&&width===1440)await page.screenshot({path:path.join(process.env.TEST_SCREENSHOT_DIR,'homepage-preview.png')});
@@ -72,6 +78,7 @@ const server = http.createServer((req,res) => {
       assert.deepEqual(external,[],'No third-party script should load before a customer requests CAPTCHA');
       await page.close();
     }
-    console.log('Redesign passed: seven pages at 1440/1024/768/390/320px, menus/Escape, button contrast, no overflow, form readiness, retired-sector removal, no automatic third-party requests');
+    console.log('Redesign passed: eight pages at 1440/1024/768/390/320px, menus/Escape, button contrast, no overflow, sandbox checkout links, form readiness, retired-sector removal, no automatic third-party requests');
   }finally{await browser.close();}
 })().catch(err=>{console.error(err);process.exitCode=1;}).finally(()=>server.close());
+
