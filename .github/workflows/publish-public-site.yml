@@ -31,6 +31,9 @@ on:
       - 'CNAME'
       - '.nojekyll'
       - '.github/workflows/publish-public-site.yml'
+      - 'scripts/build-public.py'
+      - '_config.yml'
+      - '404.html'
   workflow_dispatch:
 
 permissions:
@@ -52,50 +55,8 @@ jobs:
     steps:
       - name: Check out approved public repository
         uses: actions/checkout@v4
-      - name: Validate and stage public assets only
-        shell: bash
-        run: |
-          set -euo pipefail
-          mkdir -p _public
-          for file in index.html sandbox.html signin.html access.js portfolio.js ledger-theme.css dashboard.html dashboard.js workspace.css styles.css site.js blockchain.html milestones.html services.html privacy.html inquiry.js inquiry-delivery.js waitlist.html waitlist.js waitlist-privacy.html robots.txt sitemap.xml; do
-            test -s "$file"
-            cp "$file" _public/
-          done
-          for file in preview/index.html preview/styles.css preview/main.js; do
-            test -s "$file"
-          done
-          cp -R preview _public/preview
-          if [ -d assets ]; then cp -R assets _public/assets; fi
-          if [ -f CNAME ]; then cp CNAME _public/CNAME; fi
-          touch _public/.nojekyll
-          python3 - <<'PY'
-          from html.parser import HTMLParser
-          from pathlib import Path
-          from urllib.parse import urlsplit, unquote
-          class Links(HTMLParser):
-              def __init__(self):
-                  super().__init__()
-                  self.links=[]
-              def handle_starttag(self, tag, attrs):
-                  data=dict(attrs)
-                  for key in ('href','src'):
-                      if key in data: self.links.append(data[key])
-          root=Path('_public').resolve()
-          for page in root.rglob('*.html'):
-              parser=Links()
-              parser.feed(page.read_text(encoding='utf-8'))
-              for link in parser.links:
-                  parts=urlsplit(link)
-                  if parts.scheme or parts.netloc or link.startswith(('#','mailto:','tel:','data:','javascript:')): continue
-                  target=unquote(parts.path)
-                  if not target: continue
-                  if target.startswith('/'):
-                      raise SystemExit(f'Root-absolute URL requires review: {page}: {link}')
-                  resolved=(page.parent/target).resolve()
-                  if not resolved.is_relative_to(root) or not resolved.exists():
-                      raise SystemExit(f'Missing or unsafe public asset: {page}: {link}')
-          print('Public pages and local navigation assets verified')
-          PY
+      - name: Build the ready customer release
+        run: python3 scripts/build-public.py
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
         with:

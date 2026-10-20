@@ -1,0 +1,21 @@
+# Legacy GitHub Pages builds must use the same public boundary as the Actions artifact.
+exclude:
+  - dashboard.html
+  - dashboard.js
+  - portfolio.js
+  - signin.html
+  - access.js
+  - sandbox.html
+  - preview
+  - tests
+  - scripts
+  - _public
+  - README.md
+  - REDESIGN-NOTES.md
+  - A_PLUS_LEDGER_BLUEPRINT.md
+  - WORKSPACE-INTEGRATIONS.md
+  - LIVE-READINESS.md
+  - INQUIRY-INBOX-PROCEDURE.md
+  - INQUIRY-PRIVACY-DRAFT.md
+  - INQUIRY-READINESS.md
+  - WAITLIST-INBOX-PROCEDURE.md

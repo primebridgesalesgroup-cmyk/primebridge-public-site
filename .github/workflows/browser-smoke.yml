@@ -9,6 +9,8 @@ on:
       - '*.js'
       - 'preview/**'
       - 'tests/**'
+      - 'scripts/**'
+      - '_config.yml'
       - '.github/workflows/browser-smoke.yml'
   workflow_dispatch:
 permissions:
@@ -67,7 +69,7 @@ jobs:
               if(!await page.locator('#roadmap').count())throw Error('Customer roadmap missing');
               await page.locator('.header .brand').click();
               if(new URL(page.url()).pathname!=='/')throw Error('Return to website entry broken');
-              if(!await page.locator('#site-nav a[href="signin.html"]').count())throw Error('Customer access destination missing');
+              if(!await page.locator('#site-nav a[href="services.html#inquiry-delivery"]').count())throw Error('Service inquiry destination missing');
               await page.goto('http://127.0.0.1:8765/preview/index.html');
               for(const route of ['dashboard','inventory','trading','checkout','fulfillment','analytics','blockchain']){
                 await page.locator('[data-view="'+route+'"]').click();
@@ -144,10 +146,17 @@ jobs:
           JS
 
 
+      - name: Verify the exact customer release
+        run: |
+          python3 scripts/build-public.py
+          node tests/public-release.cjs
+
       - name: Save workspace screenshots
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: customer-workspace-screenshots
-          path: screenshots/workspace-*.png
+          path: |
+            screenshots/workspace-*.png
+            screenshots/public-*.png
           if-no-files-found: ignore
