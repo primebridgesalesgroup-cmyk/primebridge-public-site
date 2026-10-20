@@ -8,6 +8,7 @@ on:
       - '*.css'
       - '*.js'
       - 'preview/**'
+      - 'tests/**'
       - '.github/workflows/browser-smoke.yml'
   workflow_dispatch:
 permissions:
@@ -27,6 +28,7 @@ jobs:
           node tests/inquiry-browser.cjs
           node tests/inquiry-delivery.cjs
           node tests/redesign-browser.cjs
+          node tests/workspace-browser.cjs
           node tests/waitlist-browser.cjs
       - name: Verify navigation and mobile layouts
         run: |
@@ -140,3 +142,12 @@ jobs:
             } finally { await browser.close(); }
           })().catch(e=>{console.error(e);process.exitCode=1}).finally(()=>server.close());
           JS
+
+
+      - name: Save workspace screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: customer-workspace-screenshots
+          path: screenshots/workspace-*.png
+          if-no-files-found: ignore

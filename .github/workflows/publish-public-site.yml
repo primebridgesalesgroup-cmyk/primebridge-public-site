@@ -6,6 +6,9 @@ on:
     paths:
       - 'index.html'
       - 'sandbox.html'
+      - 'dashboard.html'
+      - 'dashboard.js'
+      - 'workspace.css'
       - 'styles.css'
       - 'site.js'
       - 'blockchain.html'
@@ -50,7 +53,7 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p _public
-          for file in index.html sandbox.html styles.css site.js blockchain.html milestones.html services.html privacy.html inquiry.js inquiry-delivery.js waitlist.html waitlist.js waitlist-privacy.html robots.txt sitemap.xml; do
+          for file in index.html sandbox.html dashboard.html dashboard.js workspace.css styles.css site.js blockchain.html milestones.html services.html privacy.html inquiry.js inquiry-delivery.js waitlist.html waitlist.js waitlist-privacy.html robots.txt sitemap.xml; do
             test -s "$file"
             cp "$file" _public/
           done
@@ -100,3 +103,4 @@ jobs:
       - name: Deploy GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+
