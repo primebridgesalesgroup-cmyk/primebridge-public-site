@@ -57,8 +57,9 @@
     const requested = location.hash.slice(1);
     if (requested === "main") { setMenu(false, false); $("workspace-title").focus(); return; }
     const aliases = {accounts:"wallets",activity:"ledger","code-bank":"licenses",dashboard:"portfolio"};
-    const route = !requested ? "portfolio" : aliases[requested] || (Object.hasOwn(sections, requested) ? requested : "route-error");
-    if (aliases[requested]) history.replaceState(null, "", "#" + route);
+    const alias = Object.hasOwn(aliases, requested) ? aliases[requested] : "";
+    const route = !requested ? "portfolio" : alias || (Object.hasOwn(sections, requested) ? requested : "route-error");
+    if (alias) history.replaceState(null, "", "#" + route);
     const details = sections[route] || ["Section unavailable", "This link does not match a ledger section."];
     setMenu(false, false);
     document.body.dataset.route = route;
