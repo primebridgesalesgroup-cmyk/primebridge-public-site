@@ -35,3 +35,12 @@ full screen-reader or security certification.
 The earlier unpublished correction branch is incorporated in this design. This
 branch is prepared for review; no merge or deployment is performed by this record.
 
+
+
+## Navigation and dashboard correction — 20 October 2026
+
+The earlier redesign exposed 13 destinations but several are availability pages, not operational services. The wallet-only chart did not match historical portfolio performance. This correction restores the compact portfolio hierarchy, removes repeat wallet prompts, and makes unavailable service navigation visible in advance. Wallet permissions are requested only by the Accounts button. Header wallet status navigates to Accounts without requesting permissions.
+
+Sections render synchronously, support browser history, reset scroll/focus, preserve unknown links with an error state, and accept Accounts/Activity/Code Bank aliases. Mobile uses an accessible vertical drawer instead of a scrolling navigation strip. A native balance observation is no longer presented as portfolio performance; historical chart filters remain disabled until an actual valuation/history connection exists.
+
+Customer authentication, private ledger records, historical pricing, transfers, trading, and code licensing remain unconnected. This correction does not deploy those services or establish a production blockchain.

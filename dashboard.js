@@ -40,18 +40,38 @@
     const whole = text.slice(0, -decimals), fraction = text.slice(-decimals).replace(/0+$/, "");
     return whole + (fraction ? "." + fraction : "");
   }
-  function showSection() {
-    const requested = location.hash.slice(1), route = Object.hasOwn(sections, requested) ? requested : "portfolio";
-    if (route !== requested) history.replaceState(null, "", "#" + route);
+  const mobileMenu = matchMedia("(max-width: 900px)");
+  let menuOpen = false;
+  function setMenu(open, restoreFocus = true) {
+    menuOpen = open && mobileMenu.matches;
+    document.body.classList.toggle("ledger-nav-open", menuOpen);
+    $("ledger-menu-toggle").setAttribute("aria-expanded", String(menuOpen));
+    $("ledger-menu-backdrop").hidden = !menuOpen;
+    $("ledger-sidebar").inert = mobileMenu.matches && !menuOpen;
+    $("main").inert = menuOpen;
+    $("ledger-app-header").inert = menuOpen;
+    if (menuOpen) $("ledger-menu-close").focus();
+    else if (restoreFocus && mobileMenu.matches) $("ledger-menu-toggle").focus();
+  }
+  function showSection(focus = true) {
+    const requested = location.hash.slice(1);
+    if (requested === "main") { setMenu(false, false); $("workspace-title").focus(); return; }
+    const aliases = {accounts:"wallets",activity:"ledger","code-bank":"licenses",dashboard:"portfolio"};
+    const route = !requested ? "portfolio" : aliases[requested] || (Object.hasOwn(sections, requested) ? requested : "route-error");
+    if (aliases[requested]) history.replaceState(null, "", "#" + route);
+    const details = sections[route] || ["Section unavailable", "This link does not match a ledger section."];
+    setMenu(false, false);
+    document.body.dataset.route = route;
     document.querySelectorAll(".workspace-section").forEach(section => { section.hidden = section.id !== route; });
     document.querySelectorAll("[data-section]").forEach(link => {
       if (link.dataset.section === route) link.setAttribute("aria-current", "page");
       else link.removeAttribute("aria-current");
     });
-    $("workspace-title").textContent = sections[route][0];
-    $("workspace-description").textContent = sections[route][1];
-    $("workspace-summary").hidden = route === "portfolio";
-    document.title = sections[route][0] + " | A+ customer workspace";
+    $("workspace-title").textContent = details[0];
+    $("workspace-description").textContent = details[1];
+    $("workspace-summary").hidden = route !== "wallets";
+    document.title = details[0] + " | A+ customer workspace";
+    if (focus) { $("workspace-title").focus({preventScroll:true}); window.scrollTo(0, 0); }
   }
   function holdings() {
     if (!state.account || state.native === null) return [];
@@ -68,7 +88,7 @@
     if (!rows.length) {
       const tr = document.createElement("tr"), td = document.createElement("td"), heading = document.createElement("strong");
       td.colSpan = 5; td.className = "empty-cell";
-      heading.textContent = state.busy ? "Reading your wallet…" : !state.account ? "Connect your wallet to begin." : $("asset-category").value !== "all" || $("asset-search").value ? "No displayed holdings match this filter." : "Wallet balance is not available.";
+      heading.textContent = state.busy ? "Reading your wallet…" : !state.account ? "No holdings loaded." : $("asset-category").value !== "all" || $("asset-search").value ? "No displayed holdings match this filter." : "Wallet balance is not available.";
       const explanation = ["physical", "energy", "code", "rights"].includes($("asset-category").value) ? "This category requires authenticated service records. The service is not connected." : "Only successful wallet reads appear here. Private account records are not connected.";
       td.append(heading, document.createTextNode(explanation)); tr.append(td); body.append(tr); return;
     }
@@ -82,7 +102,7 @@
   function render() {
     const connected = Boolean(state.account), readable = connected && state.native !== null;
     $("connection-status").dataset.connected = String(connected);
-    $("connection-label").textContent = connected ? "Wallet connected · private account services not connected" : "Wallet not connected · private account services not connected";
+    $("connection-label").textContent = connected ? "Wallet connected" : "Wallet offline";
     $("summary-wallet").textContent = connected ? short(state.account) : "Not connected";
     $("summary-network").textContent = state.chain ? name(state.chain) : "—";
     $("summary-chain").textContent = state.chain ? "Chain ID " + state.chain : "Connect to read chain identity";
@@ -96,14 +116,13 @@
     $("chain-id").textContent = state.chain || "Not read";
     $("chain-block").textContent = state.block || "Not read";
     $("network-read-status").textContent = state.block ? "Provider response" : "Not read";
-    $("header-connect").textContent = connected ? "Refresh wallet ↻" : "Connect wallet ↗";
-    for (const id of ["header-connect", "connect-wallet"]) $(id).disabled = pendingConnection || state.busy;
+    $("connect-wallet").disabled = pendingConnection || state.busy;
     $("connect-wallet").textContent = connected ? "Reconnect wallet" : "Connect wallet";
     $("wallet-provider").disabled = connected || pendingConnection;
     $("refresh-wallet").disabled = !connected || state.busy;
     $("disconnect-wallet").disabled = !connected && !pendingConnection;
     $("add-token").disabled = !readable || state.busy || tokenPending;
-    $("receive-address").textContent = readable ? state.account : "Connect a wallet first";
+    $("receive-address").textContent = readable ? state.account : "No account selected";
     $("receive-network").textContent = readable ? name(state.chain) + " · " + state.chain : "Not read";
     $("copy-receive-address").disabled = !readable;
     $("ledger-network-status").textContent = state.block ? "Wallet network · " + name(state.chain) + " · Block " + state.block : "Network not read";
@@ -112,7 +131,7 @@
   }
   function clearReads() { state.chain = ""; state.native = null; state.block = ""; state.updated = ""; state.tokens = []; }
   function disconnected(message = "Disconnected from this page. Wallet permissions can be revoked in your wallet settings.") {
-    portfolio.reset(); state.revision++; detach(); detach = () => {}; state.provider = null; state.account = ""; state.busy = false; pendingConnection = false; tokenPending = false; clearReads(); $("token-contract").value = ""; render(); tell(message);
+    state.revision++; detach(); detach = () => {}; state.provider = null; state.account = ""; state.busy = false; pendingConnection = false; tokenPending = false; clearReads(); $("token-contract").value = ""; render(); tell(message);
   }
   async function rpc(provider, method, params = []) {
     let timer;
@@ -137,7 +156,6 @@
       if (revision !== state.revision) return;
       if (chain !== finalChain || state.account !== account) throw new Error("wallet_changed");
       state.chain = chain; state.native = uint(balanceRaw); state.block = uint(blockRaw).toString(); state.tokens = tokens; state.updated = new Date().toLocaleTimeString();
-      portfolio.observe({account, chain, balance: state.native});
       tell("Wallet data refreshed. Balances are reported by your provider; private customer records are not connected.");
     } catch {
       if (revision === state.revision) { clearReads(); tell("Wallet data could not be read. Check the selected network and wallet connection, then refresh. Stale balances have been cleared."); }
@@ -147,9 +165,9 @@
     const accountsChanged = accounts => {
       if (state.provider !== provider) return;
       if (!Array.isArray(accounts) || !addressPattern.test(accounts[0] || "")) { disconnected("Your wallet no longer exposes an account. Page data was cleared."); return; }
-      portfolio.reset(); state.tokens = []; state.account = accounts[0]; void readAll();
+      state.tokens = []; state.account = accounts[0]; void readAll();
     };
-    const chainChanged = () => { if (state.provider === provider) { portfolio.reset(); state.tokens = []; void readAll(); } };
+    const chainChanged = () => { if (state.provider === provider) { state.tokens = []; void readAll(); } };
     const disconnect = () => { if (state.provider === provider) disconnected("Wallet connection ended. Page data was cleared."); };
     if (typeof provider.on === "function") { provider.on("accountsChanged", accountsChanged); provider.on("chainChanged", chainChanged); provider.on("disconnect", disconnect); }
     detach = () => { if (typeof provider.removeListener === "function") { provider.removeListener("accountsChanged", accountsChanged); provider.removeListener("chainChanged", chainChanged); provider.removeListener("disconnect", disconnect); } };
@@ -232,8 +250,29 @@
     catch { if (revision === state.revision) tell("Clipboard access is unavailable. You can select and copy the displayed account address."); }
   });
   $("open-notifications").addEventListener("click", () => $("notifications-dialog").showModal());
-  window.addEventListener("hashchange", showSection);
-  $("header-connect").addEventListener("click", () => state.account ? void readAll() : void connect());
+  document.addEventListener("click", event => {
+    const anchor = event.target.closest("a[href^='#']");
+    if (!anchor || event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+    event.preventDefault();
+    if (location.hash !== anchor.hash) history.pushState(null, "", anchor.hash);
+    showSection();
+  });
+  window.addEventListener("hashchange", () => showSection());
+  window.addEventListener("popstate", () => showSection());
+  $("ledger-menu-toggle").addEventListener("click", () => setMenu(!menuOpen));
+  $("ledger-menu-close").addEventListener("click", () => setMenu(false));
+  $("ledger-menu-backdrop").addEventListener("click", () => setMenu(false));
+  mobileMenu.addEventListener("change", () => setMenu(false, false));
+  document.addEventListener("keydown", event => {
+    if (!menuOpen) return;
+    if (event.key === "Escape") { event.preventDefault(); setMenu(false); }
+    if (event.key === "Tab") {
+      const items = [...$("ledger-sidebar").querySelectorAll("a[href],button:not([disabled])")];
+      const first = items[0], last = items.at(-1);
+      if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+      else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+    }
+  });
   $("connect-wallet").addEventListener("click", () => void connect());
   $("refresh-wallet").addEventListener("click", () => void readAll());
   $("disconnect-wallet").addEventListener("click", () => disconnected());
@@ -246,5 +285,5 @@
   window.dispatchEvent(new Event("eip6963:requestProvider"));
   if (window.ethereum) addProvider("injected", window.ethereum, "Browser wallet");
   if (!providers.size) { $("wallet-provider").options[0].textContent = "No browser wallet detected"; }
-  $("year").textContent = String(new Date().getFullYear()); showSection(); render();
+  $("year").textContent = String(new Date().getFullYear()); showSection(false); render();
 })();
