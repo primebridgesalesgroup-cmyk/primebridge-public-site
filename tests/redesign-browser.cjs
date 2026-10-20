@@ -49,7 +49,7 @@ const server = http.createServer((req,res) => {
           }
         }
         if(file==='signin.html'){
-          assert.equal(await page.locator('#access-form fieldset').isDisabled(),true);
+          assert.equal(await page.locator('#access-form fieldset').evaluate(fieldset=>fieldset.disabled),true);
           assert.equal(await page.locator('#access-email').isDisabled(),true);
           assert.match(await page.locator('.access-availability').innerText(),/No credentials are collected/);
         }
