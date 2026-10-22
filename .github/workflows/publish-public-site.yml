@@ -5,6 +5,8 @@ on:
     branches: [main]
     paths:
       - 'index.html'
+      - 'wallet.html'
+      - 'tests/wallet-release.test.cjs'
       - 'sandbox.html'
       - 'dashboard.html'
       - 'dashboard.js'
@@ -55,6 +57,8 @@ jobs:
     steps:
       - name: Check out approved public repository
         uses: actions/checkout@v4
+      - name: Verify wallet cannot sign or transfer
+        run: node tests/wallet-release.test.cjs
       - name: Build the ready customer release
         run: python3 scripts/build-public.py
       - name: Configure GitHub Pages
