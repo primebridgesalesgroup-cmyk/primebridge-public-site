@@ -11,8 +11,8 @@
 "use strict";
 (() => {
  const get=id=>document.getElementById(id);
- let provider=null, account="", revision=0;
- function reset(message){revision++;provider=null;account="";get("address").textContent="—";get("chain").textContent="—";get("balance").textContent="—";get("refresh").disabled=true;get("disconnect").disabled=true;get("status").textContent=message;}
+ let provider=null, account="", revision=0, detach=()=>{};
+ function reset(message){revision++;detach();detach=()=>{};provider=null;account="";get("address").textContent="—";get("chain").textContent="—";get("balance").textContent="—";get("refresh").disabled=true;get("disconnect").disabled=true;get("status").textContent=message;}
  function validAddress(value){return typeof value==="string"&&/^0x[a-fA-F0-9]{40}$/.test(value);}
  async function refresh(){
   if(!provider||!validAddress(account))return;
@@ -40,9 +40,13 @@
    if(!Array.isArray(accounts)||!validAddress(accounts[0]))throw Error("No account available");
    reset("Reading wallet…");provider=p;account=accounts[0];
    if(typeof p.on==="function"){
-     p.on("accountsChanged",()=>{if(provider===p)reset("Wallet account changed. Reconnect to refresh the selected account.");});
-     p.on("chainChanged",()=>{if(provider===p)reset("Wallet network changed. Reconnect to refresh the network and balance.");});
-     p.on("disconnect",()=>{if(provider===p)reset("Wallet disconnected.");});
+     const handlers=[
+       ["accountsChanged",()=>{if(provider===p)reset("Wallet account changed. Reconnect to refresh the selected account.");}],
+       ["chainChanged",()=>{if(provider===p)reset("Wallet network changed. Reconnect to refresh the network and balance.");}],
+       ["disconnect",()=>{if(provider===p)reset("Wallet disconnected.");}]
+     ];
+     for(const [event,listener] of handlers)p.on(event,listener);
+     detach=()=>{if(typeof p.removeListener==="function")for(const [event,listener] of handlers)p.removeListener(event,listener);};
    }
    get("refresh").disabled=false;get("disconnect").disabled=false;await refresh();
   }catch{reset("Wallet connection was not completed. No transaction was requested.");}
