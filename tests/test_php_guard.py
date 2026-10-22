@@ -16,7 +16,7 @@ class PhpGuardTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as d:
             root = Path(d)
             p = root / 'index.html'
-            p.write_text('hello <?php echo 1; ?>')
+            p.write_text('hello <' + '?php echo 1; ?>')
             self.assertTrue(find_php(root, [p]))
 
     def test_plain_frontend_allowed(self):
