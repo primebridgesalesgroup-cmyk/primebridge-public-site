@@ -8,7 +8,7 @@ import shutil
 ROOT = Path(__file__).resolve().parents[1]
 OUTPUT = ROOT / '_public'
 PAGES = ('index.html', 'services.html', 'blockchain.html', 'milestones.html',
-         'privacy.html', 'waitlist.html', 'waitlist-privacy.html', '404.html')
+         'privacy.html', 'identity-security.html', 'waitlist.html', 'waitlist-privacy.html', '404.html')
 FILES = (*PAGES, 'styles.css', 'workspace.css', 'ledger-theme.css', 'site.js',
          'inquiry.js', 'inquiry-delivery.js', 'waitlist.js', 'robots.txt',
          'sitemap.xml', 'CNAME', 'assets/primebridge-earth.webp')
