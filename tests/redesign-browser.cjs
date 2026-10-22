@@ -29,7 +29,7 @@ const server = http.createServer((req,res) => {
         assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true,`${width}px overflow: ${file}`);
         assert.equal(await page.locator('h1').count(),1,file);
         if(file!=='preview/index.html'){
-          assert.deepEqual(await page.locator('#site-nav a').evaluateAll(links=>links.map(link=>link.getAttribute('href'))),['wallet.html',...Array.from(['services.html','blockchain.html','milestones.html','waitlist.html','services.html#inquiry-delivery'])],file+' shared customer navigation');
+          assert.deepEqual(await page.locator('#site-nav a').evaluateAll(links=>links.map(link=>link.getAttribute('href'))),(['privacy.html','waitlist-privacy.html'].includes(file) ? ['services.html','blockchain.html','milestones.html','waitlist.html','services.html#inquiry-delivery'] : ['wallet.html','services.html','blockchain.html','milestones.html','waitlist.html','services.html#inquiry-delivery']),file+' shared customer navigation');
           const collapsed=await page.locator('.menu-toggle').isVisible();
           if(collapsed){
             await page.locator('.menu-toggle').click();
