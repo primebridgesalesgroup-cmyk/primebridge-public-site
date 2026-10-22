@@ -1,0 +1,26 @@
+name: Block PHP in public release
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  block-php:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Unit-test PHP guard
+        run: PYTHONPATH=scripts python3 -m unittest discover -s tests -p test_php_guard.py -v
+      - name: Scan source files
+        run: python3 scripts/php_guard.py
+      - name: Generate explicit public release
+        run: python3 scripts/build-public.py
+      - name: Scan generated release
+        run: python3 scripts/php_guard.py
