@@ -38,7 +38,13 @@
   get("connect").disabled=true;
   try{const accounts=await p.request({method:"eth_requestAccounts"});
    if(!Array.isArray(accounts)||!validAddress(accounts[0]))throw Error("No account available");
-   reset("Reading wallet…");provider=p;account=accounts[0];get("refresh").disabled=false;get("disconnect").disabled=false;await refresh();
+   reset("Reading wallet…");provider=p;account=accounts[0];
+   if(typeof p.on==="function"){
+     p.on("accountsChanged",()=>{if(provider===p)reset("Wallet account changed. Reconnect to refresh the selected account.");});
+     p.on("chainChanged",()=>{if(provider===p)reset("Wallet network changed. Reconnect to refresh the network and balance.");});
+     p.on("disconnect",()=>{if(provider===p)reset("Wallet disconnected.");});
+   }
+   get("refresh").disabled=false;get("disconnect").disabled=false;await refresh();
   }catch{reset("Wallet connection was not completed. No transaction was requested.");}
   finally{get("connect").disabled=false;}
  });
