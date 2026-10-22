@@ -6,7 +6,7 @@ import sys
 
 PHP_SUFFIXES = {'.php', '.php3', '.php4', '.php5', '.php7', '.php8', '.phtml', '.phar', '.inc'}
 PHP_MANIFESTS = {'composer.json', 'composer.lock', '.user.ini'}
-PHP_MARKERS = (b'<' + b'?php', b'<' + b'?=', b'#!/usr/bin/env php', b'#!/usr/bin/php')
+PHP_MARKERS = (b'<' + b'?php', b'<' + b'?=', b'#!' + b'/usr/bin/env php', b'#!' + b'/usr/bin/php')
 
 
 def tracked_and_untracked(root: Path):
@@ -21,7 +21,7 @@ def find_php(root: Path, paths=None):
     candidates = paths if paths is not None else tracked_and_untracked(root)
     findings = []
     for path in candidates:
-        if not path.is_file() or path.is_symlink():
+        if not path.is_file() or path.is_symlink() or path.suffix.lower() in {'.pyc', '.pyo'}:
             continue
         relative = path.relative_to(root)
         if path.suffix.lower() in PHP_SUFFIXES or path.name.lower() in PHP_MANIFESTS:
