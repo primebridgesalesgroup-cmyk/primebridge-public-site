@@ -1,1 +1,3 @@
 const fs=require('node:fs'); const assert=require('node:assert/strict'); const html=fs.readFileSync('wallet.html','utf8');assert.match(html,/eth_requestAccounts/);assert.match(html,/eth_getBalance/);assert.match(html,/eth_chainId/);assert.doesNotMatch(html,/eth_sendTransaction|personal_sign|eth_signTypedData|wallet_switchEthereumChain/);assert.match(html,/Read-only/);console.log('wallet public safety checks passed');
+assert.match(html,/accountsChanged/,'account switching must invalidate balances');
+assert.match(html,/chainChanged/,'chain switching must invalidate balances');
