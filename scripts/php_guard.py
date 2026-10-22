@@ -6,7 +6,7 @@ import sys
 
 PHP_SUFFIXES = {'.php', '.php3', '.php4', '.php5', '.php7', '.php8', '.phtml', '.phar', '.inc'}
 PHP_MANIFESTS = {'composer.json', 'composer.lock', '.user.ini'}
-PHP_MARKERS = (b'<?php', b'<?=', b'#!/usr/bin/env php', b'#!/usr/bin/php')
+PHP_MARKERS = (b'<' + b'?php', b'<' + b'?=', b'#!/usr/bin/env php', b'#!/usr/bin/php')
 
 
 def tracked_and_untracked(root: Path):
