@@ -33,6 +33,7 @@ on:
       - 'CNAME'
       - '.nojekyll'
       - '.github/workflows/publish-public-site.yml'
+      - '.github/workflows/verify-live-domain.yml'
       - 'scripts/build-public.py'
       - '_config.yml'
       - '404.html'
