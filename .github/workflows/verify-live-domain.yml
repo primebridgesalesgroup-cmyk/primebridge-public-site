@@ -1,0 +1,52 @@
+name: Verify live custom-domain release
+on:
+  workflow_run:
+    workflows: ["Publish approved public website"]
+    types: [completed]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify-domain:
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - name: Verify live wallet and homepage against expected release
+        env:
+          EXPECTED_HOME: "The A+ Ledger read-only wallet viewer"
+        run: |
+          python3 - <<'PY'
+          import time
+          import urllib.request
+          import urllib.error
+          import sys
+          base = "https://primebridgesalesgroup.org"
+          targets = {
+              "/": ["Connect a wallet", "The A+ Ledger read-only wallet viewer"],
+              "/wallet.html": ["Read-only wallet connection", "eth_getBalance", "eth_requestAccounts"],
+          }
+          for attempt in range(1, 7):
+              problems = []
+              for path, phrases in targets.items():
+                  url = base + path
+                  try:
+                      request = urllib.request.Request(url, headers={"User-Agent": "APlus-Release-Verification/1.0", "Cache-Control": "no-cache"})
+                      with urllib.request.urlopen(request, timeout=12) as response:
+                          html = response.read(1000000).decode("utf-8", "replace")
+                          if response.status != 200:
+                              problems.append(f"{path}: HTTP {response.status}")
+                          for phrase in phrases:
+                              if phrase not in html:
+                                  problems.append(f"{path}: missing {phrase!r}")
+                  except (urllib.error.URLError, TimeoutError, UnicodeError) as error:
+                      problems.append(f"{path}: {error}")
+              if not problems:
+                  print("Verified custom-domain homepage and read-only wallet viewer.")
+                  sys.exit(0)
+              print(f"Attempt {attempt}/6: " + "; ".join(problems), flush=True)
+              if attempt < 6:
+                  time.sleep(20)
+          print("Custom-domain release mismatch. Investigate Pages custom-domain DNS, publishing source, cache or competing host.", file=sys.stderr)
+          sys.exit(1)
+          PY
